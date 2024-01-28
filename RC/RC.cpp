@@ -1,3 +1,5 @@
+//Define all ports pinned from radio control receptor
+
 #define CH1 3
 #define CH2 5
 #define CH3 6
@@ -20,26 +22,34 @@ bool redSwitch(byte channelInput, bool defaultValue){
 }
 
 void setup(){
+
   Serial.begin(115200);
+
+  //Define ports with input
   pinMode(CH1, INPUT);
   pinMode(CH2, INPUT);
   pinMode(CH3, INPUT);
   pinMode(CH4, INPUT);
   pinMode(CH5, INPUT);
+
 }
 
-int ch1Value, ch2Value, ch3Value, ch4Value;
-bool ch5Value;
+//Variables to set radio signals
+int ch1Value, ch2Value, ch3Value, ch4Value; //Analog buttons
+bool ch5Value;  //Switch
 
 void loop() {
+
+  //Read all channels and switches
   ch1Value = readChannel(CH1, -100, 100, 0);
   ch2Value = readChannel(CH2, -100, 100, 0);
   ch3Value = readChannel(CH3, -100, 100, -100);
   ch4Value = readChannel(CH4, -100, 100, 0);
   ch5Value = readSwitch(CH5, false);
-  
-  //Serial.print("Ch1: ");
-  //Serial.print(ch1Value);
+
+  //Print all channels
+  Serial.print("Ch1: ");
+  Serial.print(ch1Value);
   Serial.print(" Ch2: ");
   Serial.print(ch2Value);
   Serial.print(" Ch3: ");
@@ -48,5 +58,8 @@ void loop() {
   Serial.print(ch4Value);
   Serial.print(" Ch5: ");
   Serial.println(ch5Value);
+
+  //Pause
   delay(500);
+
 }
