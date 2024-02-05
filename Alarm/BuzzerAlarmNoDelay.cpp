@@ -9,9 +9,9 @@ void setup() {
 }
 
 int frequency_min=1500;
-int frequency_max=2000;
+int frequency_max=3000;
 
-int frequency_sum=5;
+int frequency_sum=10;
 
 int frequency=1000;
 bool bool_updown=true;
@@ -21,7 +21,7 @@ void loop() {
   if (currentMillis - previousMillis >= interval) {
     previousMillis = currentMillis;
 
-    //tone(buzzer, frequency);
+    tone(buzzer, frequency);
     
     if (frequency<frequency_min) {
       frequency=frequency_min; 
