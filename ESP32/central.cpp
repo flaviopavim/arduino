@@ -43,6 +43,7 @@ void fourthLightChanged(uint8_t brightness);
 void fifthLightChanged(uint8_t brightness);
 void sixthLightChanged(uint8_t brightness);
 void seventhLightChanged(uint8_t brightness);
+void eigthLightChanged(uint8_t brightness);
 
 ESP8266WiFiMulti WiFiMulti;
 
@@ -57,6 +58,7 @@ String Device_4_Name = "esp 4";
 String Device_5_Name = "esp 5";
 String Device_6_Name = "esp 6";
 String Device_7_Name = "esp 7";
+String Device_8_Name = "esp 8";
 
 boolean wifiConnected = false;
 
@@ -99,8 +101,19 @@ void fifthLightChanged(uint8_t brightness) {
 void sixthLightChanged(uint8_t brightness) {
   lightChanged(R6,brightness);
 }
+
 void seventhLightChanged(uint8_t brightness) {
   lightChanged(R7,brightness);
+}
+
+void eigthLightChanged(uint8_t brightness) {
+  if (brightness) {
+    if (brightness == 255) {
+        Serial.println("Alarm ON");
+    }
+  } else {
+      Serial.println("Alarm OFF");
+  }
 }
 
 // connect to wifi – returns true if successful or false if not
@@ -171,6 +184,8 @@ void setup() {
         espalexa.addDevice(Device_5_Name, fifthLightChanged);
         espalexa.addDevice(Device_6_Name, sixthLightChanged);
         espalexa.addDevice(Device_7_Name, seventhLightChanged);
+
+        espalexa.addDevice(Device_8_Name, eigthLightChanged);
         
         espalexa.begin();
   
