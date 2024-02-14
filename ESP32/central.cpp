@@ -2,7 +2,7 @@
 
     Central ESP32
 
-    To garden control
+    Alarm, garden control
 
 */
 
@@ -20,6 +20,7 @@
 //#endif
 #include <Espalexa.h>
 
+#define R0 0
 #define R1 1
 #define R2 2
 #define R3 3
@@ -27,6 +28,7 @@
 #define R5 5
 #define R6 6
 #define R7 7
+#define R8 8
 
 String api = "http://flaviopavim.com.br/esp/";
 const char *ssid="";
@@ -36,14 +38,15 @@ const char *pass="";
 boolean connectWifi();
 
 //callback functions
+void zeroLightChanged(uint8_t brightness);
 void firstLightChanged(uint8_t brightness);
 void secondLightChanged(uint8_t brightness);
 void thirdLightChanged(uint8_t brightness);
 void fourthLightChanged(uint8_t brightness);
 void fifthLightChanged(uint8_t brightness);
-void sixthLightChanged(uint8_t brightness);
-void seventhLightChanged(uint8_t brightness);
-void eigthLightChanged(uint8_t brightness);
+//void sixthLightChanged(uint8_t brightness);
+//void seventhLightChanged(uint8_t brightness);
+//void eigthLightChanged(uint8_t brightness);
 
 ESP8266WiFiMulti WiFiMulti;
 
@@ -51,20 +54,21 @@ String datetime="";
 String command="";
 
 // device names
+String Device_0_Name = "esp 0";
 String Device_1_Name = "esp 1";
 String Device_2_Name = "esp 2";
 String Device_3_Name = "esp 3";
 String Device_4_Name = "esp 4";
 String Device_5_Name = "esp 5";
-String Device_6_Name = "esp 6";
-String Device_7_Name = "esp 7";
-String Device_8_Name = "esp 8";
+//String Device_6_Name = "esp 6";
+//String Device_7_Name = "esp 7";
+//String Device_8_Name = "esp 8";
 
 boolean wifiConnected = false;
 
 Espalexa espalexa;
 
-void lightChanged(port,brightness) {
+void lightChanged(int port, int brightness) {
   if (brightness) {
     if (brightness == 255) {
       digitalWrite(port, LOW);
@@ -76,6 +80,10 @@ void lightChanged(port,brightness) {
     Serial.println(port);
     Serial.println("Device ON");
   }
+}
+
+void zeroLightChanged(uint8_t brightness) {
+  lightChanged(R0,brightness);
 }
 
 void firstLightChanged(uint8_t brightness) {
@@ -98,23 +106,23 @@ void fifthLightChanged(uint8_t brightness) {
   lightChanged(R5,brightness);
 }
 
-void sixthLightChanged(uint8_t brightness) {
-  lightChanged(R6,brightness);
-}
+//void sixthLightChanged(uint8_t brightness) {
+//  lightChanged(R6,brightness);
+//}
 
-void seventhLightChanged(uint8_t brightness) {
-  lightChanged(R7,brightness);
-}
+//void seventhLightChanged(uint8_t brightness) {
+//  lightChanged(R7,brightness);
+//}
 
-void eigthLightChanged(uint8_t brightness) {
-  if (brightness) {
-    if (brightness == 255) {
-        Serial.println("Alarm ON");
-    }
-  } else {
-      Serial.println("Alarm OFF");
-  }
-}
+//void eigthLightChanged(uint8_t brightness) {
+//  if (brightness) {
+//    if (brightness == 255) {
+//        Serial.println("Alarm ON");
+//    }
+//  } else {
+//      Serial.println("Alarm OFF");
+//  }
+//}
 
 // connect to wifi – returns true if successful or false if not
 boolean connectWifi() {
@@ -149,26 +157,41 @@ boolean connectWifi() {
   return state;
 }
 
+void rgb(int r, int g, int b) {
+    analogWrite(R6, r);
+    analogWrite(R7, g);
+    analogWrite(R8, b);
+}
+
 void setup() {
+
     Serial.begin(9600);
-    //WiFi.mode(WIFI_STA);
+
     WiFiMulti.addAP(ssid, pass);
 
+    pinMode(R0, OUTPUT);
     pinMode(R1, OUTPUT);
     pinMode(R2, OUTPUT);
     pinMode(R3, OUTPUT);
     pinMode(R4, OUTPUT);
     pinMode(R5, OUTPUT);
+
+    //RGB
     pinMode(R6, OUTPUT);
     pinMode(R7, OUTPUT);
+    pinMode(R8, OUTPUT);
+
+    rgb(255,255,0); //yellow
   
+    digitalWrite(R0, HIGH);
     digitalWrite(R1, HIGH);
     digitalWrite(R2, HIGH);
     digitalWrite(R3, HIGH);
     digitalWrite(R4, HIGH);
     digitalWrite(R5, HIGH);
-    digitalWrite(R6, HIGH);
-    digitalWrite(R7, HIGH);
+    //digitalWrite(R6, HIGH);
+    //digitalWrite(R7, HIGH);
+    //digitalWrite(R8, HIGH);
   
   
       // Initialise wifi connection
@@ -177,15 +200,15 @@ void setup() {
     if (wifiConnected) {
         
         // Define your devices here.
+        espalexa.addDevice(Device_0_Name, zeroLightChanged); //simplest definition, default state off
         espalexa.addDevice(Device_1_Name, firstLightChanged); //simplest definition, default state off
         espalexa.addDevice(Device_2_Name, secondLightChanged);
         espalexa.addDevice(Device_3_Name, thirdLightChanged);
         espalexa.addDevice(Device_4_Name, fourthLightChanged);
         espalexa.addDevice(Device_5_Name, fifthLightChanged);
-        espalexa.addDevice(Device_6_Name, sixthLightChanged);
-        espalexa.addDevice(Device_7_Name, seventhLightChanged);
-
-        espalexa.addDevice(Device_8_Name, eigthLightChanged);
+        //espalexa.addDevice(Device_6_Name, sixthLightChanged);
+        //espalexa.addDevice(Device_7_Name, seventhLightChanged);
+        //espalexa.addDevice(Device_8_Name, eigthLightChanged);
         
         espalexa.begin();
   
@@ -206,6 +229,9 @@ void loop() {
     if (count==100) { //em média a cada 10 segundos
       count=0;
       if (WiFiMulti.run() == WL_CONNECTED) {
+
+        rgb(0,0,255); //blue
+
         WiFiClient client;
         HTTPClient http;
         Serial.print("[HTTP] begin...\n");
@@ -243,6 +269,8 @@ void loop() {
 
               if (bool_water) {
 
+                rgb(0,255,0); //green
+
                 if (count_water==0) {
                     //liga a água
                     digitalWrite(R2, LOW);
@@ -255,7 +283,8 @@ void loop() {
                 //a função é puxada a cada 10 segundos
                 //60 segundos = 6 x 10 segundos
                 //2 x 60 segundos = 2 minutos
-                if (count_water==6*2) {
+                //if (count_water==6*2) {
+                if (count_water==6) { // 1 minuto
                     //reinicia o contador
                     count_water=0;
                     bool_water=false;
