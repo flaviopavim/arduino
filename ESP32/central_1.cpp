@@ -13,12 +13,22 @@
 #include <WiFiClient.h>
 
 //Alexa
-#ifdef ARDUINO_ARCH_ESP32
-#include <WiFi.h>
-#else
-#include <ESP8266WiFi.h>
-#endif
+//#ifdef ARDUINO_ARCH_ESP32
+//#include <WiFi.h>
+//#else
+//#include <ESP8266WiFi.h>
+//#endif
 #include <Espalexa.h>
+
+#define R0 0
+#define R1 1
+#define R2 2
+#define R3 3
+#define R4 4
+#define R5 5
+#define R6 6
+#define R7 7
+#define R8 8
 
 String api = "http://flaviopavim.com.br/esp/";
 const char *ssid="";
@@ -58,7 +68,7 @@ boolean wifiConnected = false;
 
 Espalexa espalexa;
 
-void lightChanged(int port, uint8_t brightness) {
+void lightChanged(int port, int brightness) {
   if (brightness) {
     if (brightness == 255) {
       digitalWrite(port, LOW);
@@ -73,27 +83,27 @@ void lightChanged(int port, uint8_t brightness) {
 }
 
 void zeroLightChanged(uint8_t brightness) {
-  lightChanged(D0,brightness);
+  lightChanged(R0,brightness);
 }
 
 void firstLightChanged(uint8_t brightness) {
-  lightChanged(D1,brightness);
+  lightChanged(R1,brightness);
 }
 
 void secondLightChanged(uint8_t brightness) {
-  lightChanged(D2,brightness);
+  lightChanged(R2,brightness);
 }
 
 void thirdLightChanged(uint8_t brightness) {
-  lightChanged(D3,brightness);
+  lightChanged(R3,brightness);
 }
 
 void fourthLightChanged(uint8_t brightness) {
-  lightChanged(D4,brightness);
+  lightChanged(R4,brightness);
 }
 
 void fifthLightChanged(uint8_t brightness) {
-  lightChanged(D5,brightness);
+  lightChanged(R5,brightness);
 }
 
 //void sixthLightChanged(uint8_t brightness) {
@@ -147,41 +157,38 @@ boolean connectWifi() {
   return state;
 }
 
-/*
 void rgb(int r, int g, int b) {
     analogWrite(R6, r);
     analogWrite(R7, g);
     analogWrite(R8, b);
 }
-*/
 
 void setup() {
 
-    Serial.begin(115200);
-    Serial.println("Hello world");
+    Serial.begin(9600);
 
     WiFiMulti.addAP(ssid, pass);
 
-    pinMode(D0, OUTPUT);
-    pinMode(D1, OUTPUT);
-    pinMode(D2, OUTPUT);
-    pinMode(D3, OUTPUT);
-    pinMode(D4, OUTPUT);
-    pinMode(D5, OUTPUT);
+    pinMode(R0, OUTPUT);
+    pinMode(R1, OUTPUT);
+    pinMode(R2, OUTPUT);
+    pinMode(R3, OUTPUT);
+    pinMode(R4, OUTPUT);
+    pinMode(R5, OUTPUT);
 
     //RGB
-    pinMode(D6, OUTPUT);
-    pinMode(D7, OUTPUT);
-    pinMode(D8, OUTPUT);
+    pinMode(R6, OUTPUT);
+    pinMode(R7, OUTPUT);
+    pinMode(R8, OUTPUT);
 
-    //rgb(255,255,0); //yellow
+    rgb(255,255,0); //yellow
   
-    digitalWrite(D0, HIGH);
-    digitalWrite(D1, HIGH);
-    digitalWrite(D2, HIGH);
-    digitalWrite(D3, HIGH);
-    digitalWrite(D4, HIGH);
-    digitalWrite(D5, HIGH);
+    digitalWrite(R0, HIGH);
+    digitalWrite(R1, HIGH);
+    digitalWrite(R2, HIGH);
+    digitalWrite(R3, HIGH);
+    digitalWrite(R4, HIGH);
+    digitalWrite(R5, HIGH);
     //digitalWrite(R6, HIGH);
     //digitalWrite(R7, HIGH);
     //digitalWrite(R8, HIGH);
@@ -223,7 +230,7 @@ void loop() {
       count=0;
       if (WiFiMulti.run() == WL_CONNECTED) {
 
-        //rgb(0,0,255); //blue
+        rgb(0,0,255); //blue
 
         WiFiClient client;
         HTTPClient http;
@@ -262,11 +269,11 @@ void loop() {
 
               if (bool_water) {
 
-                //rgb(0,255,0); //green
+                rgb(0,255,0); //green
 
                 if (count_water==0) {
                     //liga a água
-                    digitalWrite(D2, LOW);
+                    digitalWrite(R2, LOW);
                     Serial.println("Device2 ON");
                 }
 
@@ -282,7 +289,7 @@ void loop() {
                     count_water=0;
                     bool_water=false;
                     //desliga a água
-                    digitalWrite(D2, HIGH);
+                    digitalWrite(R2, HIGH);
                     Serial.println("Device2 OFF");
                 }
 
