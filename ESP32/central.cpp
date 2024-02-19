@@ -20,9 +20,12 @@
 #endif
 #include <Espalexa.h>
 
-String api = "http://flaviopavim.com.br/esp/";
-const char *ssid="";
-const char *pass="";
+#include <ArduinoJson.h>
+
+String api = "";
+const char *ssid=""; // Nome do WiFi
+const char *pass=""; // Senha do WiFi
+const char *uuid="abc123";   // ID registrado na API
 
 // prototypes
 boolean connectWifi();
@@ -219,23 +222,75 @@ int count_water=0;
 int count=0;
 void loop() {
     espalexa.loop();
+
+    //jsonn();
+  
+
     if (count==100) { //em média a cada 10 segundos
       count=0;
       if (WiFiMulti.run() == WL_CONNECTED) {
-
-        //rgb(0,0,255); //blue
 
         WiFiClient client;
         HTTPClient http;
         Serial.print("[HTTP] begin...\n");
         if (http.begin(client, api)) {  // HTTP
-          Serial.print("[HTTP] GET...\n");
-          int httpCode = http.GET();
+          Serial.print("[HTTP] POST...\n");
+
+          // Set content type to JSON
+          http.addHeader("Content-Type", "application/json");
+
+          // Create a StaticJsonDocument
+          StaticJsonDocument<200> jsonDocument;
+
+          // Fill in the JSON fields
+          jsonDocument["from"] = "cpp";
+          jsonDocument["to"] = "php";
+          jsonDocument["system"] = "security";
+          jsonDocument["version"] = "1.0.0";
+          jsonDocument["uuid"] = "esp32";
+
+          // Create a nested JSON object for the "data" field
+          JsonObject nestedData = jsonDocument.createNestedObject("data");
+          nestedData["view"] = "refresh";
+
+          // Serialize the JSON object to a string
+          String jsonString;
+          serializeJson(jsonDocument, jsonString);
+
+          // Print the serialized JSON string
+          Serial.println(jsonString);
+
+          int httpCode = http.POST(jsonString);
           if (httpCode > 0) {
             Serial.printf("[HTTP] GET... code: %d\n", httpCode);
             if (httpCode == HTTP_CODE_OK || httpCode == HTTP_CODE_MOVED_PERMANENTLY) {
 
-              String get=http.getString();
+              String get = http.getString();
+              Serial.println(get);
+
+              const char* json = get.c_str();
+              
+              JsonDocument doc;
+              DeserializationError error = deserializeJson(doc, json);
+
+              if (error) {
+                Serial.print(F("deserializeJson() failed: "));
+                Serial.println(error.f_str());
+                return;
+              }
+
+              //const char* from = doc["from"];
+              //const char* to = doc["to"];
+              //const char* system = doc["system"];
+              //const char* version = doc["version"];
+              const char* status = doc["status"];
+              //const char* msg = doc["msg"];
+
+              if (status=="success") {
+
+              }
+
+              /*
 
               command=get.substring(20,get.length());
               datetime=get.substring(0,19);
@@ -287,6 +342,7 @@ void loop() {
                 }
 
               }
+              */
 
             }
           } else {
