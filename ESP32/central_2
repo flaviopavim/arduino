@@ -28,8 +28,8 @@
 #define R4 22
 
 String api = "http://flaviopavim.com.br/esp/";
-const char *ssid="_Flavio_";
-const char *pass="qweasd01";
+const char *ssid="";
+const char *pass="";
 
 // prototypes
 boolean connectWifi();
