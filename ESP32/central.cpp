@@ -10,7 +10,7 @@
     D2 = Computer
     D3 = Water
     D4 = 
-    D5 = 
+    D5 = Buzzer
     D6 = R
     D7 = G
     D8 = B
@@ -37,6 +37,8 @@ String api = "http://whitehats.com.br/api/security/";
 const char *ssid=""; // Nome do WiFi
 const char *pass=""; // Senha do WiFi
 const char *uuid="abc123";   // ID registrado na API
+
+bool bool_alarm=false;
 
 // prototypes
 boolean connectWifi();
@@ -78,10 +80,12 @@ void alarmChanged(uint8_t brightness) {
     if (brightness == 255) {
       soundOk();
       Serial.println("Alarm on");
+      bool_alarm=true;
     }
   } else {
     soundNotOk();
     Serial.println("Alarm off");
+    bool_alarm=false;
   }
 }
 
@@ -93,22 +97,28 @@ void computerChanged(uint8_t brightness) {
       parameter="0";
       digitalWrite(port, HIGH);
       Serial.println("Computer ON");
+      soundOk();
     }
   } else {
     command="shutdown";
     parameter="3600";
     digitalWrite(port, LOW);
-    Serial.println(port);
-    Serial.println("Computer will whutdown in 1 hour");
+    Serial.println("Computer will shutdown in 1 hour");
+    soundNotOk();
   }
 }
 
 void waterChanged(uint8_t brightness) {
-  
-}
-
-void secondLightChanged(uint8_t brightness) {
-  lightChanged(D2,brightness);
+  int port = D2;
+  if (brightness) {
+    if (brightness == 255) {
+      digitalWrite(port, HIGH);
+      Serial.println("Water ON");
+    }
+  } else {
+    digitalWrite(port, LOW);
+    Serial.println("Water OFF");
+  }
 }
 
 void thirdLightChanged(uint8_t brightness) {
@@ -122,24 +132,6 @@ void fourthLightChanged(uint8_t brightness) {
 void fifthLightChanged(uint8_t brightness) {
   lightChanged(D5,brightness);
 }
-
-//void sixthLightChanged(uint8_t brightness) {
-//  lightChanged(R6,brightness);
-//}
-
-//void seventhLightChanged(uint8_t brightness) {
-//  lightChanged(R7,brightness);
-//}
-
-//void eigthLightChanged(uint8_t brightness) {
-//  if (brightness) {
-//    if (brightness == 255) {
-//        Serial.println("Alarm ON");
-//    }
-//  } else {
-//      Serial.println("Alarm OFF");
-//  }
-//}
 
 // connect to wifi – returns true if successful or false if not
 boolean connectWifi() {
@@ -192,36 +184,28 @@ void bip(int frequency, int delay_){
 }
 
 void soundSetup() {
-  bip(500,100);
+  //bip(500,100);
   bip(1000,100);
   bip(1500,100);
 }
 
 void soundOk() {
   rgb(0,255,0);
+  bip(500,100);
+  rgb(0,0,0);
   bip(1000,100);
-  rgb(0,0,0);
-  bip(1200,100);
   rgb(0,255,0);
-  bip(1400,100);
-  rgb(0,0,0);
-  bip(1600,100);
-  rgb(0,255,0);
-  bip(1800,100);
+  bip(1500,100);
   rgb(0,0,0);
 }
 
 void soundNotOk() {
   rgb(255,0,0);
-  bip(1800,100);
+  bip(1500,100);
   rgb(0,0,0);
-  bip(1600,100);
-  rgb(255,0,0);
-  bip(1400,100);
-  rgb(0,0,0);
-  bip(1200,100);
-  rgb(255,0,0);
   bip(1000,100);
+  rgb(255,0,0);
+  bip(500,100);
   rgb(0,0,0);
 }
 
@@ -258,7 +242,7 @@ void setup() {
 
     WiFiMulti.addAP(ssid, pass);
 
-    pinMode(D0, OUTPUT);
+    //pinMode(D0, OUTPUT);
     pinMode(D1, OUTPUT);
     pinMode(D2, OUTPUT);
     pinMode(D3, OUTPUT);
@@ -320,11 +304,18 @@ void loop() {
 
     //jsonn();
 
+    if (bool_alarm) {
+      rgb(255,255,0);
+      delay(100);
+    }
+
     if (wifiConnected) {
       rgb(0,255,0);
     } else {
       rgb(255,0,0);
     }
+
+    
   
 
     if (count==100) { //em média a cada 10 segundos
