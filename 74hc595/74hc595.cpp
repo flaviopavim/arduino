@@ -1,9 +1,7 @@
-//Pin connected to ST_CP of 74HC595
-int latchPin = 8;
-//Pin connected to SH_CP of 74HC595
-int clockPin = 12;
-////Pin connected to DS of 74HC595
-int dataPin = 11;
+int latchPin = 8;  //Pin connected to ST_CP of 74HC595
+int clockPin = 12; //Pin connected to SH_CP of 74HC595
+int dataPin  = 11; //Pin connected to DS of 74HC595
+
 void setup() {
     //set pins to output so you can control the shift register
     pinMode(latchPin, OUTPUT);

@@ -1,8 +1,20 @@
 /*
-    Controlador Bluetooth pra Arduino pro Mini
-    Feito para dispositivos WhiteHats ou compatíveis
-    Aplicativo pra controle:
+    Bluetooth Control to Arduino Pro Mini
+    Maded to WhiteHats devices (https://whitehats.com.br) or compatible
+    App to control:
         https://play.google.com/store/apps/details?id=br.com.whitehats.bluetooth
+
+    The app connects to Bluetooth device and send a string like:
+        *1.
+        *2.
+        *11.
+        *12.
+        *A0.
+        *A1.
+
+    * means the start of instruction
+    . means the end of instruction
+    The value between them, control the respective ports
 */
 
 String value = "";
