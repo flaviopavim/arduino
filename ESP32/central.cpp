@@ -1,6 +1,6 @@
 /*
 
-    Central ESP32 + Alexa
+    Central de controle da casa com ESP32 + Alexa
 
     Alarm, garden control
 
