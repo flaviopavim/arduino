@@ -31,7 +31,6 @@ void alarmAll() {
   }
 }
 
-
 void setup(){
   pinMode(buzzer, OUTPUT); // Set buzzer - pin 4 as an output
   soundSetup();

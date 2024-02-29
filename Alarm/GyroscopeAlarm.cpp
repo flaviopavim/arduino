@@ -68,31 +68,8 @@
 
 int mode=1; //1 = alarm movement,  2 = cronometer
 
-// LED Colors
-void off() {
-}
-void white1() {
-    //33% white
-}
-void white2() {
-    //66% white
-}
-void white3() {
-    //100% white
-}
-void yellow() {
-}
-void green() {
-}
-void blue() {
-}
-void purple() {
-}
-void pink() {
-}
-void red() {
-}
-void orange() {
+void rgb(int r, int g, int b) {
+    //RGB intensity control 0 ~ 255
 }
 
 int seconds=0;
@@ -102,25 +79,25 @@ void click() {
     } else if (mode==2) {
         seconds++;
         if (seconds==1) {
-            white1();
+            rgb(70,70,70); //white 1
         } else if (seconds==2) {
-            white2();
+            rgb(180,180,180); //white 2
         } else if (seconds==3) {
-            white3();
+            rgb(255,255,255); //white 3
         } else if (seconds==4) {
-            yellow();
+            rgb(255,255,0); //yellow
         } else if (seconds==5) {
-            green();
+            rgb(0,255,0); //green
         } else if (seconds==6) {
-            blue();
+            rgb(0,0,255); //blue
         } else if (seconds==7) {
-            purple();
+            rgb(255,0,255); //purple
         } else if (seconds==8) {
-            pink();
+            rgb(255,50,255); //pink
         } else if (seconds==9) {
-            red();
+            rgb(255,0,0); //red
         } else if (seconds==10) {
-            orange();
+            rgb(255,100,0); //orange
             seconds=0;
         }
     }
