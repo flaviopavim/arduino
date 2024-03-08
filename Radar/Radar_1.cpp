@@ -14,7 +14,6 @@ void loop() {
 
     //1 décimo de segundo
 
-
     if (count%5==0) {
         //meio segundo
     }
