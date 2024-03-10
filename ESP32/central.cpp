@@ -33,7 +33,7 @@
 
 #include <ArduinoJson.h>
 
-String api = "http://whitehats.com.br/api/security/";
+String api = "http://whitehats.com.br/api/whitehats/";
 const char *ssid=""; // Nome do WiFi
 const char *pass=""; // Senha do WiFi
 const char *uuid="abc123";   // ID registrado na API
