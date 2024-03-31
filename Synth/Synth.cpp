@@ -1,3 +1,18 @@
+/*
+
+Synthetizer Project
+
+UNDER CONSTRUCTION
+
+A0 - Potenciometer
+A1 - Potenciometer
+3  - R
+5  - G
+6  - B
+13 - Buzzer
+
+*/
+
 const int buzzer = 2; //buzzer to arduino pin 2
 
 #define NOTE_B0  31
@@ -102,6 +117,7 @@ void soundSetup() {
   bip(1500,100);
 }
 
+/*
 void setup(){
   Serial.begin(9600);
   pinMode(buzzer, OUTPUT); // Set buzzer - pin 4 as an output
@@ -109,9 +125,7 @@ void setup(){
   delay(1000);
 }
 
-long map(long x, long in_min, long in_max, long out_min, long out_max) {
-  return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
-}
+
 
 void loop() {
 
@@ -123,4 +137,49 @@ void loop() {
     bip(map(sA0,20,1024,31,4978),100);
   }
    
+}
+*/
+
+long map(long x, long in_min, long in_max, long out_min, long out_max) {
+  return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+}
+
+
+const int numReadings = 5; // Número de leituras a serem utilizadas para a média móvel
+int readings[numReadings];   // Array para armazenar as leituras
+int index = 0;               // Índice atual no array de leituras
+int total = 0;               // Soma total das leituras
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(buzzer, OUTPUT); // Define o buzzer - pino 4 como saída
+  soundSetup();
+  delay(1000);
+
+  // Inicializa o array de leituras
+  for (int thisReading = 0; thisReading < numReadings; thisReading++) {
+    readings[thisReading] = 0;
+  }
+}
+
+void loop() {
+  // Subtrai a leitura mais antiga e adiciona a mais recente à soma total
+  total = total - readings[index];
+  readings[index] = analogRead(A0);
+  total = total + readings[index];
+
+  // Avança para a próxima posição no array de leituras
+  index = (index + 1) % numReadings;
+
+  // Calcula a média das leituras
+  int average = total / numReadings;
+
+  // Imprime a média
+  Serial.println("Average: " + String(average));
+
+  // Se a média for maior que um determinado limite, toca o buzzer
+  if (average > 20) {
+    int frequency = map(average, 20, 1014, 31, 4978);
+    bip(frequency, 10);
+  }
 }
