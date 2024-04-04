@@ -1,8 +1,10 @@
 //portas e ligações
-int buzzer = 2;
+int buzzer1 = 2;
+int buzzer2 = 2;
 
 //liga ou desliga o buzzer
-bool boolBuzzer = false;
+bool boolBuzzer1 = false;
+bool boolBuzzer2 = false;
 
 //inicialização do Arduino
 void setup() {
@@ -26,18 +28,28 @@ void loop() {
     previousMillis = currentMillis;
     
     //se o boolBuzzer for true
-    if (boolBuzzer) {
+    if (boolBuzzer1) {
       //liga o buzzer
-      tone(buzzer, 523);
+      tone(buzzer1, 523);
     } else {
       //desligar
-      noTone(buzzer);
+      noTone(buzzer1);
+    }
+    
+    //se o boolBuzzer for true
+    if (boolBuzzer2) {
+      //liga o buzzer
+      tone(buzzer2, 523);
+    } else {
+      //desligar
+      noTone(buzzer2);
     }
 
     //adiciona o contrário de boolBuzzer
     //se for false, seta como true
     //se for true, seta como false
-    boolBuzzer=!boolBuzzer;
+    boolBuzzer1=!boolBuzzer1;
+    boolBuzzer2=!boolBuzzer2;
 
   }
 }
