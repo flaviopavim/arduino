@@ -8,6 +8,7 @@ void setup() {
     pinMode(clockPin, OUTPUT);
     pinMode(dataPin, OUTPUT);
 }
+
 void loop() {
     // count from 0 to 255 and display the number
     // on the LEDs
