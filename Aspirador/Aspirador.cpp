@@ -73,8 +73,13 @@ void setup() {
 
 }
 
+void whereDoIGo() {
+    int distance=getDistance(); //cm
+    if (distance<10) { //cm
+    }
+}
+
 void loop() {
-    int distance=getDistance();
 }
 
 
