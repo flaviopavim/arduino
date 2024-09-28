@@ -1,86 +1,101 @@
-#include "Ultrasonic.h" //INCLUSÃO DA BIBLIOTECA NECESSÁRIA PARA FUNCIONAMENTO DO CÓDIGO
+#define CH1 3
+#define CH2 5
+#define CH3 6
 
-const int echoPin = 8; //PINO DIGITAL UTILIZADO PELO HC-SR04 ECHO(RECEBE)
-const int trigPin = 7; //PINO DIGITAL UTILIZADO PELO HC-SR04 TRIG(ENVIA)
+// Read the number of a given channel and convert to the range provided.
+// If the channel is off, return the default value
+int readChannel(int channelInput, int minLimit, int maxLimit, int defaultValue){
+  int ch = pulseIn(channelInput, HIGH, 30000);
+  if (ch < 100) return defaultValue;
+  return map(ch, 1000, 2000, minLimit, maxLimit);
+}
 
-Ultrasonic ultrasonic(trigPin,echoPin); //INICIALIZANDO OS PINOS DO ARDUINO
+void setup(){
 
-int distancia; //VARIÁVEL DO TIPO INTEIRO
-String result; //VARIÁVEL DO TIPO STRING
+  Serial.begin(115200);
 
-//MÉTODO RESPONSÁVEL POR CALCULAR A DISTÂNCIA
-void hcsr04(){
-    digitalWrite(trigPin, LOW); //SETA O PINO 6 COM UM PULSO BAIXO "LOW"
-    delayMicroseconds(2); //INTERVALO DE 2 MICROSSEGUNDOS
-    digitalWrite(trigPin, HIGH); //SETA O PINO 6 COM PULSO ALTO "HIGH"
-    delayMicroseconds(10); //INTERVALO DE 10 MICROSSEGUNDOS
-    digitalWrite(trigPin, LOW); //SETA O PINO 6 COM PULSO BAIXO "LOW" NOVAMENTE
-    //FUNÇÃO RANGING, FAZ A CONVERSÃO DO TEMPO DE
-    //RESPOSTA DO ECHO EM CENTIMETROS, E ARMAZENA
-    //NA VARIAVEL "distancia"
-    distancia = (ultrasonic.Ranging(CM)); //VARIÁVEL GLOBAL RECEBE O VALOR DA DISTÂNCIA MEDIDA
-    result = String(distancia); //VARIÁVEL GLOBAL DO TIPO STRING RECEBE A DISTÂNCIA(CONVERTIDO DE INTEIRO PARA STRING)
-    delay(500); //INTERVALO DE 500 MILISSEGUNDOS
- }
+  pinMode(CH1, INPUT);
+  pinMode(CH2, INPUT);
+  pinMode(CH3, INPUT);
 
-/***************************************/
+  //Relês de controle dos motores
+  pinMode(A0,OUTPUT); //relê 1
+  pinMode(A1,OUTPUT); //relê 2
+  pinMode(A2,OUTPUT); //relê 3
+  pinMode(A3,OUTPUT); //relê 4
 
-int relay1=A0;
-int relay2=A1;
-int relay3=A2;
-int relay4=A3;
+}
 
-/***************************************/
+int ch1Value, ch2Value, ch3Value, ch4Value;
+bool ch5Value;
 
+//parar o carrinho
 void stop() {
-    digitalWrite(relay1,HIGH);
-    digitalWrite(relay2,HIGH);
-    digitalWrite(relay3,HIGH);
-    digitalWrite(relay4,HIGH);
+  digitalWrite(A0, HIGH);
+  digitalWrite(A1, HIGH);
+  digitalWrite(A2, HIGH);
+  digitalWrite(A3, HIGH);
 }
-void front() {
-    stop();
-}
+
+//andar pra trás
 void back() {
-    stop();
+  digitalWrite(A0, HIGH);
+  digitalWrite(A1, LOW);
+  digitalWrite(A2, HIGH);
+  digitalWrite(A3, LOW);
 }
+
+//andar pra frente
+void front() {
+  digitalWrite(A0, LOW);
+  digitalWrite(A1, HIGH);
+  digitalWrite(A2, LOW);
+  digitalWrite(A3, HIGH);
+}
+
+//andar pra esquerda
 void left() {
-    stop();
+  digitalWrite(A0, HIGH);
+  digitalWrite(A1, LOW);
+  digitalWrite(A2, LOW);
+  digitalWrite(A3, HIGH);
 }
+
+//andar pra direita
 void right() {
-    stop();
-}
-
-/***************************************/
-
-int getDistance() {
-    hcsr04(); // FAZ A CHAMADA DO MÉTODO "hcsr04()"
-    Serial.print("Distancia "); //IMPRIME O TEXTO NO MONITOR SERIAL
-    Serial.print(result); ////IMPRIME NO MONITOR SERIAL A DISTÂNCIA MEDIDA
-    Serial.println("cm"); //IMPRIME O TEXTO NO MONITOR SERIAL
-    return result;
-}
-
-/***************************************/
-
-void setup() {
-
-    Serial.begin(9600); //INICIALIZA A PORTA SERIAL
-
-    //inicia o Ultrasonic
-    pinMode(echoPin, INPUT); //DEFINE O PINO COMO ENTRADA (RECEBE)
-    pinMode(trigPin, OUTPUT); //DEFINE O PINO COMO SAIDA (ENVIA)
-
-}
-
-void whereDoIGo() {
-    int distance=getDistance(); //cm
-    if (distance<10) { //cm
-    }
+  digitalWrite(A0, LOW);
+  digitalWrite(A1, HIGH);
+  digitalWrite(A2, HIGH);
+  digitalWrite(A3, LOW);
 }
 
 void loop() {
+
+  ch1Value = readChannel(CH1, -100, 100, 0);
+  ch2Value = readChannel(CH2, -100, 100, 0);
+  ch3Value = readChannel(CH3, -100, 100, 0);
+  
+  Serial.print(" Ch2: ");
+  Serial.print(ch2Value);
+  Serial.print(" Ch3: ");
+  Serial.println(ch3Value);
+
+  //abaixo foi usado o canal 3 e 2 do rádio controle
+  if (ch3Value>80) {
+    //o carrinho vai pra esquerda
+    left();
+  } else if (ch3Value<-80) {
+    //o carrinho vai pra direita
+    right();
+  } else if (ch2Value<30 && ch2Value>-30) {
+    //o carrinho fica parado
+    stop();
+  } else if (ch2Value>80) {
+    //vai pra frente
+    front();
+  } else if (ch2Value<-80) {
+    //vai pra trás
+    back();
+  }
+  
 }
-
-
-
