@@ -1,9 +1,9 @@
+//Posrtas utilizadas
 #define CH1 3
 #define CH2 5
 #define CH3 6
 
-// Read the number of a given channel and convert to the range provided.
-// If the channel is off, return the default value
+//Lê os canais
 int readChannel(int channelInput, int minLimit, int maxLimit, int defaultValue){
   int ch = pulseIn(channelInput, HIGH, 30000);
   if (ch < 100) return defaultValue;
@@ -12,8 +12,10 @@ int readChannel(int channelInput, int minLimit, int maxLimit, int defaultValue){
 
 void setup(){
 
+  //Inicia serial pra monitorar o controle
   Serial.begin(115200);
 
+  //Inicia os pinos do controle
   pinMode(CH1, INPUT);
   pinMode(CH2, INPUT);
   pinMode(CH3, INPUT);
@@ -26,8 +28,8 @@ void setup(){
 
 }
 
-int ch1Value, ch2Value, ch3Value, ch4Value;
-bool ch5Value;
+//Variáveis pra receber dados do controle
+int ch1Value, ch2Value, ch3Value;
 
 //parar o carrinho
 void stop() {
@@ -71,10 +73,12 @@ void right() {
 
 void loop() {
 
+  //Lê o valor dos canais do Rádio Controle
   ch1Value = readChannel(CH1, -100, 100, 0);
   ch2Value = readChannel(CH2, -100, 100, 0);
   ch3Value = readChannel(CH3, -100, 100, 0);
   
+  //Printa no monitor serial pra ver os valores
   Serial.print(" Ch2: ");
   Serial.print(ch2Value);
   Serial.print(" Ch3: ");
