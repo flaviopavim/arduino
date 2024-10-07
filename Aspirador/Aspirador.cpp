@@ -1,7 +1,13 @@
-//Posrtas utilizadas
+//Portas utilizadas
 #define CH1 3
 #define CH2 5
 #define CH3 6
+
+//Portas dos relês
+#define RELAY1 A0
+#define RELAY2 A1
+#define RELAY3 A2
+#define RELAY4 A3
 
 //Lê os canais
 int readChannel(int channelInput, int minLimit, int maxLimit, int defaultValue){
@@ -21,10 +27,10 @@ void setup(){
   pinMode(CH3, INPUT);
 
   //Relês de controle dos motores
-  pinMode(A0,OUTPUT); //relê 1
-  pinMode(A1,OUTPUT); //relê 2
-  pinMode(A2,OUTPUT); //relê 3
-  pinMode(A3,OUTPUT); //relê 4
+  pinMode(RELAY1,OUTPUT); //relê 1
+  pinMode(RELAY2,OUTPUT); //relê 2
+  pinMode(RELAY3,OUTPUT); //relê 3
+  pinMode(RELAY4,OUTPUT); //relê 4
 
 }
 
@@ -33,42 +39,42 @@ int ch1Value, ch2Value, ch3Value;
 
 //parar o carrinho
 void stop() {
-  digitalWrite(A0, HIGH);
-  digitalWrite(A1, HIGH);
-  digitalWrite(A2, HIGH);
-  digitalWrite(A3, HIGH);
+  digitalWrite(RELAY1, HIGH);
+  digitalWrite(RELAY2, HIGH);
+  digitalWrite(RELAY3, HIGH);
+  digitalWrite(RELAY4, HIGH);
 }
 
 //andar pra trás
 void back() {
-  digitalWrite(A0, HIGH);
-  digitalWrite(A1, LOW);
-  digitalWrite(A2, HIGH);
-  digitalWrite(A3, LOW);
+  digitalWrite(RELAY1, HIGH);
+  digitalWrite(RELAY2, LOW);
+  digitalWrite(RELAY3, HIGH);
+  digitalWrite(RELAY4, LOW);
 }
 
 //andar pra frente
 void front() {
-  digitalWrite(A0, LOW);
-  digitalWrite(A1, HIGH);
-  digitalWrite(A2, LOW);
-  digitalWrite(A3, HIGH);
+  digitalWrite(RELAY1, LOW);
+  digitalWrite(RELAY2, HIGH);
+  digitalWrite(RELAY3, LOW);
+  digitalWrite(RELAY4, HIGH);
 }
 
 //andar pra esquerda
 void left() {
-  digitalWrite(A0, HIGH);
-  digitalWrite(A1, LOW);
-  digitalWrite(A2, LOW);
-  digitalWrite(A3, HIGH);
+  digitalWrite(RELAY1, HIGH);
+  digitalWrite(RELAY2, LOW);
+  digitalWrite(RELAY3, LOW);
+  digitalWrite(RELAY4, HIGH);
 }
 
 //andar pra direita
 void right() {
-  digitalWrite(A0, LOW);
-  digitalWrite(A1, HIGH);
-  digitalWrite(A2, HIGH);
-  digitalWrite(A3, LOW);
+  digitalWrite(RELAY1, LOW);
+  digitalWrite(RELAY2, HIGH);
+  digitalWrite(RELAY3, HIGH);
+  digitalWrite(RELAY4, LOW);
 }
 
 void loop() {
