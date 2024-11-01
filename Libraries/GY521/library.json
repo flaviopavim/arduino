@@ -1,0 +1,23 @@
+{
+  "name": "GY521",
+  "keywords": "GY521,Angle,Acceleration,gyro",
+  "description": "Arduino library for GY521 angle measurement.",
+  "authors":
+  [
+    {
+      "name": "Rob Tillaart",
+      "email": "Rob.Tillaart@gmail.com",
+      "maintainer": true
+    }
+  ],
+  "repository":
+  {
+    "type": "git",
+    "url": "https://github.com/RobTillaart/GY521.git"
+  },
+  "version": "0.3.8",
+  "license": "MIT",
+  "frameworks": "arduino",
+  "platforms": "*",
+  "headers": "GY521.h"
+}

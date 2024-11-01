@@ -1,0 +1,4 @@
+<?php
+/* 
+ * Silence id golden ;)
+ */
