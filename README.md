@@ -1,12 +1,26 @@
-# Arduino
+# Arduino  
 
-My Arduino compilation
+### Welcome to My Arduino Collection  
 
-Arduino is the hobby of my life. I love Arduino, ESP32, Raspberry, and all kind of boards
+Arduino has been a lifelong passion for me. I enjoy working with Arduino, ESP32, Raspberry Pi, and a variety of development boards. This repository is a compilation of my Arduino projects, experiments, and ideas.  
 
-My collection includes a lot of Arduino Pro Mini, 3 Arduino Mega, 1 Arduino Nano, 2 ESP32, 1 Raspberry PI 3 and many other peripherals
+### My Collection  
 
+Here are some of the boards and peripherals I use in my projects:  
+- Arduino Pro Mini  
+- Arduino Mega  
+- Arduino Nano  
+- ESP32  
+- Raspberry Pi 3  
+- Plus many other peripherals and accessories  
 
-Soon I will post more vídeos about in my channel (in Portuguese from Brazil)
+### What's Next?  
 
-https://youtube.com/flaviopavim
+I'm excited to share my knowledge and projects with you! Stay tuned for upcoming videos on my YouTube channel (in Portuguese):  
+[Flávio Pavim on YouTube](https://youtube.com/flaviopavim)  
+
+I’ll be posting tutorials, project showcases, and tips to inspire and assist others in the Arduino community.  
+
+---
+
+Thank you for visiting! If you’re as passionate about Arduino and electronics as I am, feel free to connect and explore my work.
