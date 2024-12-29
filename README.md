@@ -1,6 +1,6 @@
-# Arduino  
+# Arduino 
 
-### Welcome to My Arduino Collection  
+### Welcome to My Arduino Collection (UNDER CONSTRUCTION)
 
 Arduino has been a lifelong passion for me. I enjoy working with Arduino, ESP32, Raspberry Pi, and a variety of development boards. This repository is a compilation of my Arduino projects, experiments, and ideas.  
 
