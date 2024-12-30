@@ -1,4 +1,11 @@
+/*
+
+    Hello world to IC TLC5940
+
+*/
+
 #include "Tlc5940.h" 
+
 void setup() {
     Tlc.init(0);
 }
