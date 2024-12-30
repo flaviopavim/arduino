@@ -1,36 +1,26 @@
 /*
+    Arduino Vacuum Cleaner Project
 
-    Aspirador de pó com Arduino Pro Mini
-
-    Código feito com carinho por Flávio Pavim
-    Vídeo sobre o aspirador: https://youtube........ EM BREVE
+    Created with care by Flávio Pavim
+    Video about the vacuum cleaner: https://youtube........ COMING SOON
 
     -------------------------------------------------------------------
 
-    Pra usar o Rádio Controle no Arduino, é necessário usar portas PWM
-    No Arduino Pró Mini 5v as portas PWM's são 3,5,6,9,10,11
+    Radio Control Notes:
+    To use Radio Control with Arduino, you need to use PWM ports.
+    On Arduino Pro Mini 5V, PWM ports are 3, 5, 6, 9, 10, 11.
 
-    Portas utilizadas nesse projeto:
+    Ports used in this project:
 
-        Rádio Controle:                  3 e 5
-  
-        Relês que controlam os motores  
-        (ponte H com relê):              A0, A1, A2 e A3
-  
-        Sensor de piso da esquerda:      A4
-        Sensor de piso da frente:        A5
-        Sensor de piso da direita:       A6
-  
-        Sensor de batida:                A7
-  
-        Led RGB:                         6, 9 e 10
-        Buzzer:                          2
-  
-        Ultrasonic: ????????             8 e 7
-        Servo:      ????????             4
-  
-        Sobram as portas:                11, 12 e 13
-
+    - Radio Control:                     3 and 5
+    - Motors (H-bridge relay):           A0, A1, A2, A3
+    - Floor Sensors:                     A4 (left), A5 (front), A6 (right)
+    - Collision Sensor:                  A7
+    - RGB LED:                           6, 9, 10
+    - Buzzer:                            2
+    - Ultrasonic Sensor:                 7 (Trigger), 8 (Echo)
+    - Servo Motor:                       4
+    - Free Ports:                        11, 12, 13
 */
 
 /******************************************************************************/
@@ -43,21 +33,20 @@
 
 /* 
     
-    Portas 
+     Port Definitions 
 
 */
 
-//Portas do sensor ultrasônico
-//'TRIGGER' envia, 'ECHO' recebe
+// Ultrasonic Sensor
 #define ECHO 8
 #define TRIGGER 7
 
-//sensores de piso
+//Floor Sensors
 #define LEFT  A4
 #define FRONT A5
 #define RIGHT A6
 
-//sensor de batida
+// Collision Sensor
 #define BEAT  A7
 
 #define SERVO 4
@@ -82,60 +71,59 @@
 //buzzer
 #define BUZZER 2
 
-unsigned long lastActivityTime = 0; // Armazena o tempo da última atividade
-const unsigned long inactivityDelay = 30000; // 30 segundos em milissegundos
-
 /******************************************************************************/
 /******************************************************************************/
 /******************************************************************************/
 
-/*
+// Time control
+unsigned long lastActivityTime = 0; // Last activity
+const unsigned long inactivityDelay = 30000; // 30 seconds in miliseconds
 
-    Inicializa dispositivos e portas
-
-*/
-
-//Inicializa ultrasonic
+// Ultrasonic initialization
 Ultrasonic ultrasonic(TRIGGER,ECHO);
 
-//Inicializa as portas
+/******************************************************************************/
+/******************************************************************************/
+/******************************************************************************/
+
+// Initialization
 void setup() {
 
     Serial.begin(9600); //Inicializa o serial monitor
 
-    //Ultrasonic
-    pinMode(ECHO, INPUT); //pino de entrada
-    pinMode(TRIGGER, OUTPUT); //pino de saída
+    // Ultrasonic
+    pinMode(ECHO, INPUT);
+    pinMode(TRIGGER, OUTPUT);
 
-    //Sensores de piso
+    // Floor sensor
     pinMode(LEFT,INPUT);
     pinMode(FRONT,INPUT);
     pinMode(RIGHT,INPUT);
 
-    //Sensor de batida
+    // Beat sensor
     pinMode(BEAT,INPUT);
 
-    //Servo do Ultrasonic
+    // Ultrasonic Servo
     pinMode(SERVO,INPUT);
 
-    //Ponte H
+    // H-Bridge Relays
     pinMode(A0,OUTPUT); //relê 1
     pinMode(A1,OUTPUT); //relê 2
     pinMode(A2,OUTPUT); //relê 3
     pinMode(A3,OUTPUT); //relê 4
 
-    //pinMode(A5,OUTPUT); //relê de velocidade
+    // pinMode(A5,OUTPUT); // Velocity relay
 
-    //Rádio Controle
+    // Radio control
     pinMode(CH1, INPUT); //1º canal do rádio controle
     pinMode(CH2, INPUT); //2º canal do rádio controle
 
-    //Led RGB
+    // RGB Led
     pinMode(R,OUTPUT);
     pinMode(G,OUTPUT);
     pinMode(B,OUTPUT);
 
-    //Buzzer
+    // Buzzer
     pinMode(BUZZER,OUTPUT);
 
 }
@@ -146,7 +134,7 @@ void setup() {
 
 /*
 
-    Sensores e entradas
+    Sensors and Inputs
 
 */
 
@@ -163,6 +151,12 @@ void loopUltrasonic(){
     delay(500); //INTERVALO DE 500 MILISSEGUNDOS
 }
 
+void loopFloorDetector() {
+    boolHoleFront=false;
+    boolHoleLeft=false;
+    boolHoleRight=false;
+}
+
 //função pra ler os dados do Rádio Controle
 int readChannel(int channelInput, int minLimit, int maxLimit, int defaultValue){
   int ch = pulseIn(channelInput, HIGH, 30000);
@@ -176,11 +170,10 @@ int readChannel(int channelInput, int minLimit, int maxLimit, int defaultValue){
 
 /*
 
-    Atuadores e saídas
+    Movement control
 
 */
 
-//parar o aspirador
 void stop() {
   digitalWrite(RELE1, HIGH);
   digitalWrite(RELE2, HIGH);
@@ -188,7 +181,6 @@ void stop() {
   digitalWrite(RELE4, HIGH);
 }
 
-//andar pra trás
 void back() {
   digitalWrite(RELE1, HIGH);
   digitalWrite(RELE2, LOW);
@@ -196,7 +188,6 @@ void back() {
   digitalWrite(RELE4, LOW);
 }
 
-//andar pra frente
 void front() {
   digitalWrite(RELE1, LOW);
   digitalWrite(RELE2, HIGH);
@@ -204,7 +195,6 @@ void front() {
   digitalWrite(RELE4, HIGH);
 }
 
-//andar pra esquerda
 void left() {
   digitalWrite(RELE1, HIGH);
   digitalWrite(RELE2, LOW);
@@ -212,7 +202,6 @@ void left() {
   digitalWrite(RELE4, HIGH);
 }
 
-//andar pra direita
 void right() {
   digitalWrite(RELE1, LOW);
   digitalWrite(RELE2, HIGH);
@@ -220,9 +209,9 @@ void right() {
   digitalWrite(RELE4, LOW);
 }
 
-//modo automático
-//quando usar o rádio controle, ele seta como false
-//se parar de usar por um tempo, seta como true
+// Automatic
+// quando usar o rádio controle, ele seta como false
+// se parar de usar por um tempo, seta como true
 bool automatic=true;
 //contador pro modo automático
 int automatic_counter=0;
@@ -336,28 +325,34 @@ void choose() {
 void loopAutomaticByMe() {
     if (sensor_beat) {
         //se bater
+        back();
+        delay(500);
         choose();
     } else {
         //aqui não bateu ainda
         if (!sensor_front) {
             //se não tiver piso à frente
             choose();
-        } else if (!sensor_left && !sensor_right) {
-            //se não tiver piso nas laterais
+        } else if (!sensor_front) {
+            // Se não há piso à frente, tenta contornar
+            choose();
+        } else if (distance < 20) {
+            // Se o obstáculo estiver muito próximo, tenta desviar
+            if (sensor_left) {
+                left();
+            } else if (sensor_right) {
+                right();
+            } else {
+                back();
+            }
+        } else {
+            // Movimento padrão para frente se o caminho estiver limpo
             front();
-        } else if (sensor_left) {
-            //se a esquerda estiver livre
-            //vai pra esquerda
-            left();
-        } else if (sensor_right) {
-            //se a direita estiver livre
-            //vai pra direita
-            right();
         }
-    }
 }
 
 void loopAutomaticByGPT() {
+
     static unsigned long lastMoveTime = 0; // Armazena o tempo da última mudança de movimento
     const unsigned long moveDelay = 200;  // Tempo mínimo entre mudanças de movimento em milissegundos
     unsigned long currentTime = millis();
@@ -365,7 +360,9 @@ void loopAutomaticByGPT() {
     if (currentTime - lastMoveTime < moveDelay) return; // Evita mudanças muito rápidas
 
     if (sensor_beat) {
-        // Se bateu, escolhe uma direção alternativa
+        //se bater
+        back();
+        delay(500);
         choose();
     } else if (!sensor_front) {
         // Se não há piso à frente, escolhe outra direção
@@ -407,6 +404,10 @@ void loop() {
     if (loopRC()) { 
         lastActivityTime = currentTime; // Reinicia o tempo da última atividade
     }
+
+    // lê os sensores
+    loopUltrasonic();    // sensor de distância (ultrasonic)
+    loopFloorDetector(); // sensor de piso
 
     // Verifica se houve 30 segundos de inatividade
     if (currentTime - lastActivityTime > inactivityDelay) {
