@@ -1,6 +1,8 @@
 ### Welcome to My Arduino Compilation
 **UNDER CONSTRUCTION - I'm organizing here, so sorry for the mess**
 
+***Most code are in .cpp extension, change to .ino and enjoy it ;)***
+
 Arduino has been a lifelong passion for me. I enjoy working with Arduino, ESP32, Raspberry Pi, and a variety of development boards. This repository is a compilation of my Arduino projects, experiments, and ideas.  
 
 ### My Collection  
