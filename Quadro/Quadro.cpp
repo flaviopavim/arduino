@@ -47,8 +47,6 @@ void randomize() {
 
 void setup() {
   Serial.begin(9600);
-  setupWifi();
-  setupGyro();
   FastLED.addLeds<WS2811,2,RGB>(leds,NUM_LEDS);
   FastLED.setBrightness(10);
   randomize();
@@ -68,21 +66,6 @@ void pixel(int x,int y, String color) {
 }
 
 void p(int x,int y, String color) {
-
-  if (position==-90) {
-    int x_=33-y;
-    int y_=33-x;
-    x=33-x_;
-    y=y_;
-  } else if (position==90) {
-    int x_=y;
-    int y_=x;
-    x=33-x_;
-    y=y_;
-  } else if (position==180) {
-    x=33-x;
-    y=33-y;
-  }
 
   pixel(33-x,33-y,color);
 }
@@ -263,29 +246,6 @@ void randPixels() {
   }
 }
 
-void toggle() {
-  if (design=="christmas") {
-    design="mario";
-  } else if (design=="mario") {
-    design="random";
-  } else if (design=="random") {
-    design="rainbow";
-  } else if (design=="rainbow") {
-    design="ball";
-  } else if (design=="ball") {
-    design="fall";
-  } else if (design=="fall") {
-    design="bars";
-  } else if (design=="bars") {
-    design="lunch";
-  } else if (design=="lunch") {
-    design="square";
-  } else if (design=="square") {
-    design="clock";
-  } else if (design=="clock") {
-    design="christmas";
-  }
-}
 
 String randColor() {
 
@@ -389,16 +349,6 @@ String colors[7]={
 };
 int n_rainbow=0;
 void rainbow() {
-
-  if (position==0) {
-     position=90;
-  } else if (position==90) {
-    position=180;
-  } else if (position==180) {
-    position=-90;
-  } else if (position==-90) {
-    position=0;
-  }
 
   n_rainbow++;
   if (n_rainbow>6) {
@@ -673,12 +623,9 @@ void all(String color) {
 }
 
 void loop() {
-  loopGyro();
 
   unsigned long currentMillis = millis();
   if (previousMillis==0 || currentMillis - previousMillis >= interval) {
-    colorRand=randColor();
-    loopWifi();
     previousMillis = currentMillis;
     effect++;
     if (effect>6) {
