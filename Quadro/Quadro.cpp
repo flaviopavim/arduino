@@ -271,7 +271,7 @@ void loop() {
     previousMillis = currentMillis;
     // colocar um evento aqui
     count++;
-    Serial.println(count)
+    Serial.println(count);
     if (count>10000) {
         ESP.restart();
     }
