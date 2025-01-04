@@ -22,5 +22,6 @@ void setup() {
   Serial.println(latitude, 6);
   Serial.println(longitude, 6);
 }
+
 void loop() {
 }
