@@ -95,7 +95,7 @@ void white() {
 }
 
 unsigned long previousMillis = 0;  // will store last time LED was updated
-const long interval = 30000;  // interval at which to blink (milliseconds)
+const long interval = 1000;  // interval at which to blink (milliseconds)
 
 int x=16;
 int y=1;
@@ -272,7 +272,7 @@ void loop() {
     // colocar um evento aqui
     count++;
     Serial.println(count);
-    if (count>10000) {
+    if (count>60) {
         ESP.restart();
     }
   }
