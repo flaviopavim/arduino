@@ -272,7 +272,7 @@ void loop() {
     // colocar um evento aqui
     count++;
     Serial.println(count);
-    if (count>60) {
+    if (count>60*5) {
         ESP.restart();
     }
   }
