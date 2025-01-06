@@ -166,6 +166,114 @@ int count = 0;
 unsigned long previousMillis = 0;
 const long interval = 1000;
 
+int matrix[32][8] = {0}; // Matriz principal 32x8 inicializada com 0.
+
+// Função para adicionar um número à matriz na posição especificada.
+void addNumberToMatrix(int number[5][3], int startX, int startY) {
+  for (int i = 0; i < 5; i++) {
+    for (int j = 0; j < 3; j++) {
+      matrix[startX + i][startY + j] = number[i][j];
+    }
+  }
+}
+
+int obj_one[5][3] = {
+  {0, 1, 0},
+  {1, 1, 0},
+  {0, 1, 0},
+  {0, 1, 0},
+  {1, 1, 1},
+};
+
+int obj_two[5][3] = {
+  {1, 1, 1},
+  {0, 0, 1},
+  {1, 1, 1},
+  {1, 0, 0},
+  {1, 1, 1},
+};
+
+int obj_three[5][3] = {
+  {1, 1, 1},
+  {0, 0, 1},
+  {0, 1, 1},
+  {0, 0, 1},
+  {1, 1, 1},
+};
+
+int obj_four[5][3] = {
+  {1, 0, 1},
+  {1, 0, 1},
+  {1, 1, 1},
+  {0, 0, 0},
+  {0, 0, 1},
+};
+
+int obj_five[5][3] = {
+  {1, 1, 1},
+  {1, 0, 0},
+  {1, 1, 1},
+  {0, 0, 1},
+  {1, 1, 1},
+};
+
+int obj_six[5][3] = {
+  {1, 1, 1},
+  {1, 0, 0},
+  {1, 1, 1},
+  {1, 0, 1},
+  {1, 1, 1},
+};
+
+int obj_seven[5][3] = {
+  {1, 1, 1},
+  {0, 0, 1},
+  {0, 1, 0},
+  {0, 1, 0},
+  {0, 1, 0},
+};
+
+int obj_eight[5][3] = {
+  {1, 1, 1},
+  {1, 0, 1},
+  {1, 1, 1},
+  {1, 0, 1},
+  {1, 1, 1},
+};
+
+int obj_nine[5][3] = {
+  {1, 1, 1},
+  {1, 0, 1},
+  {1, 1, 1},
+  {0, 0, 1},
+  {0, 0, 1},
+};
+
+
+// Preenche a matriz principal com os números, espaçando-os.
+void setupMatrix() {
+  addNumberToMatrix(obj_one, 0, 0);    // Adiciona o número 1.
+  addNumberToMatrix(obj_two, 0, 4);   // Adiciona o número 2 (com espaço de 1 coluna).
+  addNumberToMatrix(obj_three, 0, 8); // Adiciona o número 3.
+  addNumberToMatrix(obj_four, 0, 12); // Adiciona o número 4.
+}
+
+// Função para desenhar a matriz.
+void draw() {
+  setupMatrix(); // Preenche a matriz principal.
+
+  // Desenha os pixels.
+  for (int y = 0; y < 8; y++) {
+    for (int x = 0; x < 32; x++) {
+      if (matrix[x][y] > 0) {
+        String c = "#ffffff"; // Cor branca.
+        pixel(x + 1, y + 1, c);  // Desenha o pixel (ajuste de índice para 1-based).
+      }
+    }
+  }
+}
+
+
 void loop() {
     unsigned long currentMillis = millis();
     if (previousMillis == 0 || currentMillis - previousMillis >= interval) {
@@ -178,6 +286,7 @@ void loop() {
     }
 
     all("#000000");
-    fall();
+    //fall();
+    draw(); 
     FastLED.show();
 }
