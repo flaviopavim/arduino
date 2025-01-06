@@ -1,5 +1,20 @@
 #include <FastLED.h>
 
+#include <ESP8266WiFi.h>
+#include <ESP8266WiFiMulti.h>
+#include <ESP8266HTTPClient.h>
+#include <WiFiClient.h>
+#include <Espalexa.h>
+#include <ArduinoJson.h>
+
+String api = "http://worldtimeapi.org/api/timezone/America/Sao_Paulo";
+const char *ssid="Flavio"; // Nome do WiFi
+const char *pass="Rockandroll#"; // Senha do WiFi
+
+boolean connectWifi();
+ESP8266WiFiMulti WiFiMulti;
+boolean wifiConnected = false;
+
 // Define the dimensions of the LED matrix
 const uint8_t kMatrixWidth = 32;
 const uint8_t kMatrixHeight = 32;
@@ -153,29 +168,67 @@ void fall() {
     }
 }
 
-// Arduino setup function
-void setup() {
-    Serial.begin(9600);
-    FastLED.addLeds<WS2811, 2, RGB>(leds, NUM_LEDS);
-    FastLED.setBrightness(10);
-    resetFalled();
+boolean connectWifi() {
+  boolean state = true;
+  int i = 0;
+
+  WiFi.mode(WIFI_STA);
+  WiFi.begin(ssid, pass);
+  Serial.println("");
+  Serial.println("Connecting to WiFi");
+
+  // Wait for connection
+  Serial.print("Connecting...");
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+    if (i > 20) {
+      state = false; break;
+    }
+    i++;
+  }
+  Serial.println("");
+  if (state) {
+    Serial.print("Connected to ");
+    Serial.println(ssid);
+    Serial.print("IP address: ");
+    Serial.println(WiFi.localIP());
+  } else {
+    Serial.println("Connection failed.");
+  }
+  return state;
 }
 
-// Main loop function
-int count = 0;
-unsigned long previousMillis = 0;
-const long interval = 1000;
+
 
 int matrix[32][8] = {0}; // Matriz principal 32x8 inicializada com 0.
 
-// Função para adicionar um número à matriz na posição especificada.
-void addNumberToMatrix(int number[5][3], int startX, int startY) {
-  for (int i = 0; i < 5; i++) {
-    for (int j = 0; j < 3; j++) {
-      matrix[startX + i][startY + j] = number[i][j];
+void rotateMatrixClockwise(int number[5][3], int rows, int cols, int result[3][5]) {
+  for (int i = 0; i < rows; i++) {
+    for (int j = 0; j < cols; j++) {
+      result[j][rows - 1 - i] = number[i][j];
     }
   }
 }
+
+void addNumberToMatrix(int number[5][3], int startX, int startY) {
+  int rotated[3][5];
+  rotateMatrixClockwise(number, 5, 3, rotated);
+  
+  for (int x = 0; x < 3; x++) { // Note que os índices mudam devido à rotação
+    for (int y = 0; y < 5; y++) {
+      matrix[startX + x][startY + y] = rotated[x][y];
+    }
+  }
+}
+
+int obj_zero[5][3] = {
+  {1, 1, 1},
+  {1, 0, 1},
+  {1, 0, 1},
+  {1, 0, 1},
+  {1, 1, 1},
+};
 
 int obj_one[5][3] = {
   {0, 1, 0},
@@ -205,7 +258,7 @@ int obj_four[5][3] = {
   {1, 0, 1},
   {1, 0, 1},
   {1, 1, 1},
-  {0, 0, 0},
+  {0, 0, 1},
   {0, 0, 1},
 };
 
@@ -252,15 +305,16 @@ int obj_nine[5][3] = {
 
 // Preenche a matriz principal com os números, espaçando-os.
 void setupMatrix() {
-  addNumberToMatrix(obj_one, 0, 0);    // Adiciona o número 1.
-  addNumberToMatrix(obj_two, 0, 4);   // Adiciona o número 2 (com espaço de 1 coluna).
-  addNumberToMatrix(obj_three, 0, 8); // Adiciona o número 3.
-  addNumberToMatrix(obj_four, 0, 12); // Adiciona o número 4.
+  addNumberToMatrix(obj_one, 0+1, 0+1);   // Adiciona o número 1.
+  addNumberToMatrix(obj_two, 4+1, 0+1);   // Adiciona o número 2 (com espaço de 1 coluna).
+  addNumberToMatrix(obj_three, 8+1, 0+1); // Adiciona o número 3.
+  addNumberToMatrix(obj_four, 12+1, 0+1); // Adiciona o número 4.
 }
 
 // Função para desenhar a matriz.
 void draw() {
-  setupMatrix(); // Preenche a matriz principal.
+
+  //setupMatrix(); // Preenche a matriz principal.
 
   // Desenha os pixels.
   for (int y = 0; y < 8; y++) {
@@ -272,6 +326,133 @@ void draw() {
     }
   }
 }
+
+int hour = 0;
+int minute = 0;
+
+// Função para retornar o objeto correto baseado no dígito
+void drawNumber(int digit) {
+  // Usando uma matriz para representar a posição e o número.
+  switch (digit) {
+    case 0:
+      addNumberToMatrix(obj_zero, 0+1, 0+1);  // Adiciona o número 0
+      break;
+    case 1:
+      addNumberToMatrix(obj_one, 0+1, 0+1);  // Adiciona o número 1
+      break;
+    case 2:
+      addNumberToMatrix(obj_two, 0+1, 0+1);  // Adiciona o número 2
+      break;
+    case 3:
+      addNumberToMatrix(obj_three, 0+1, 0+1);  // Adiciona o número 3
+      break;
+    case 4:
+      addNumberToMatrix(obj_four, 0+1, 0+1);  // Adiciona o número 4
+      break;
+    case 5:
+      addNumberToMatrix(obj_five, 0+1, 0+1);  // Adiciona o número 5
+      break;
+    case 6:
+      addNumberToMatrix(obj_six, 0+1, 0+1);  // Adiciona o número 6
+      break;
+    case 7:
+      addNumberToMatrix(obj_seven, 0+1, 0+1);  // Adiciona o número 7
+      break;
+    case 8:
+      addNumberToMatrix(obj_eight, 0+1, 0+1);  // Adiciona o número 8
+      break;
+    case 9:
+      addNumberToMatrix(obj_nine, 0+1, 0+1);  // Adiciona o número 9
+      break;
+    default:
+      addNumberToMatrix(obj_zero, 0+1, 0+1);  // Adiciona o número 0 por padrão
+      break;
+  }
+}
+
+
+void setTime() {
+  if (WiFiMulti.run() == WL_CONNECTED) {
+    WiFiClient client;
+    HTTPClient http;
+    Serial.print("[HTTP] begin...\n");
+    if (http.begin(client, api)) {  // HTTP
+      http.addHeader("Content-Type", "application/json");
+      int httpCode = http.GET();
+      if (httpCode > 0) {
+        Serial.printf("[HTTP] GET... code: %d\n", httpCode);
+        if (httpCode == HTTP_CODE_OK || httpCode == HTTP_CODE_MOVED_PERMANENTLY) {
+          String get = http.getString();
+          Serial.println(get);
+          const char* json = get.c_str();
+          JsonDocument doc;
+          DeserializationError error = deserializeJson(doc, json);
+
+          if (error) {
+            Serial.print(F("deserializeJson() failed: "));
+            Serial.println(error.f_str());
+            return;
+          }
+
+          //Serial.println(String(doc));
+
+          // Supondo que a resposta tenha o formato ISO 8601 como "2025-01-05T14:30:00"
+          String datetime = doc["datetime"];
+          int separatorPos = datetime.indexOf('T');
+          
+          // Extrair a parte da hora e minuto
+          if (separatorPos != -1) {
+            String timePart = datetime.substring(separatorPos + 1);  // "14:30:00"
+            int colonPos = timePart.indexOf(':');
+            if (colonPos != -1) {
+              hour = timePart.substring(0, colonPos).toInt();  // "14"
+              minute = timePart.substring(colonPos + 1, colonPos + 3).toInt();  // "30"
+            }
+          }
+
+          // Exibir as variáveis de hora e minuto
+          Serial.print("Hour: ");
+          Serial.println(hour);
+          Serial.print("Minute: ");
+          Serial.println(minute);
+
+          //drawNumber(2);
+
+          addNumberToMatrix(obj_one, 0+1, 0+1);   // Adiciona o número 1.
+          addNumberToMatrix(obj_two, 4+1, 0+1);   // Adiciona o número 2 (com espaço de 1 coluna).
+          addNumberToMatrix(obj_three, 8+1, 0+1); // Adiciona o número 3.
+          addNumberToMatrix(obj_four, 12+1, 0+1); // Adiciona o número 4.
+
+
+        }
+      }
+    }
+  }
+}
+
+
+// Arduino setup function
+void setup() {
+    Serial.begin(9600);
+    FastLED.addLeds<WS2811, 2, RGB>(leds, NUM_LEDS);
+    FastLED.setBrightness(10);
+    resetFalled();
+
+    Serial.println("Conectando com essa bagaça...");
+    WiFiMulti.addAP(ssid, pass);
+    wifiConnected = connectWifi();
+  
+    if (wifiConnected) {
+      Serial.println("Conectado com Wifi");
+      setTime();
+    }
+}
+
+// Main loop function
+int count = 0;
+unsigned long previousMillis = 0;
+const long interval = 1000;
+
 
 
 void loop() {
@@ -286,7 +467,7 @@ void loop() {
     }
 
     all("#000000");
-    //fall();
-    draw(); 
+    fall();
+    //draw(); 
     FastLED.show();
 }
