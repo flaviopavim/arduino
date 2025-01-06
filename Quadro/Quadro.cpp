@@ -442,7 +442,7 @@ void setup() {
     WiFiMulti.addAP(ssid, pass);
     wifiConnected = connectWifi();
   
-    if (wifiConnected) {
+   if (wifiConnected) {
       Serial.println("Conectado com Wifi");
       setTime();
     }
@@ -462,9 +462,17 @@ void loop() {
         count++;
         Serial.println(count);
         if (count > 120) {
-            resetFalled();
+
+          //if (wifiConnected) {
+          //  Serial.println("Conectado com Wifi");
+          //  setTime();
+          //}
+          resetFalled();
         }
+
+        
     }
+    
 
     all("#000000");
     fall();
