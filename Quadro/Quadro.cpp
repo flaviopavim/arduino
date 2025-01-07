@@ -7,7 +7,7 @@
 #include <Espalexa.h>
 #include <ArduinoJson.h>
 
-String api = "http://worldtimeapi.org/api/timezone/America/Sao_Paulo";
+String api = "https://worldtimeapi.org/api/timezone/America/Sao_Paulo";
 const char *ssid="Flavio"; // Nome do WiFi
 const char *pass="Rockandroll#"; // Senha do WiFi
 
@@ -370,7 +370,7 @@ void drawNumber(int digit) {
   }
 }
 
-
+bool bool_get_hour=false;
 void setTime() {
   if (wifiConnected) {
     Serial.println("Buscando hora certa...");
@@ -418,7 +418,7 @@ void setTime() {
             Serial.print("Minute: ");
             Serial.println(minute);
 
-            //drawNumber(2);
+            bool_get_hour=true;
 
             addNumberToMatrix(obj_one, 0+1, 0+1);   // Adiciona o número 1.
             addNumberToMatrix(obj_two, 4+1, 0+1);   // Adiciona o número 2 (com espaço de 1 coluna).
@@ -462,7 +462,15 @@ void loop() {
           count=0;
 
           resetFalled();
-          setTime();
+
+          if (!bool_get_hour) {
+            setTime();
+          }
+
+          if (bool_get_hour) {
+
+          }
+          
         }
    
     }
