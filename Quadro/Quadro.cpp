@@ -7,7 +7,7 @@
 #include <Espalexa.h>
 #include <ArduinoJson.h>
 
-String api = "https://worldtimeapi.org/api/timezone/America/Sao_Paulo";
+String api = "http://worldtimeapi.org/api/timezone/America/Sao_Paulo";
 const char *ssid="Flavio"; // Nome do WiFi
 const char *pass="Rockandroll#"; // Senha do WiFi
 
@@ -327,8 +327,9 @@ void draw() {
   }
 }
 
-int hour = 0;
-int minute = 0;
+int hours = 0;
+int minutes = 0;
+int seconds = 0;
 
 // Função para retornar o objeto correto baseado no dígito
 void drawNumber(int digit) {
@@ -384,7 +385,7 @@ void setTime() {
       HTTPClient http;
       Serial.print("[HTTP] begin...\n");
       if (http.begin(client, api)) {  // HTTP
-        http.addHeader("Content-Type", "application/json");
+        //http.addHeader("Content-Type", "application/json");
         int httpCode = http.GET();
         if (httpCode > 0) {
           Serial.printf("[HTTP] GET... code: %d\n", httpCode);
@@ -412,16 +413,19 @@ void setTime() {
               String timePart = datetime.substring(separatorPos + 1);  // "14:30:00"
               int colonPos = timePart.indexOf(':');
               if (colonPos != -1) {
-                hour = timePart.substring(0, colonPos).toInt();  // "14"
-                minute = timePart.substring(colonPos + 1, colonPos + 3).toInt();  // "30"
+                hours = timePart.substring(0, colonPos).toInt();  // "14"
+                minutes = timePart.substring(colonPos + 1, colonPos + 3).toInt();  // "30"
+                seconds = timePart.substring(colonPos + 4, colonPos + 6).toInt();  // "30"
               }
             }
 
             // Exibir as variáveis de hora e minuto
             Serial.print("Hour: ");
-            Serial.println(hour);
-            Serial.print("Minute: ");
-            Serial.println(minute);
+            Serial.println(hours);
+            Serial.print("Minutes: ");
+            Serial.println(minutes);
+            Serial.print("Seconds: ");
+            Serial.println(seconds);
 
             bool_get_hour=true;
 
@@ -459,6 +463,20 @@ void loop() {
     unsigned long currentMillis = millis();
     if (previousMillis == 0 || currentMillis - previousMillis >= interval) {
         previousMillis = currentMillis;
+
+        seconds++;
+        if (seconds>=60) {
+          seconds=0;
+          minutes++;
+          if (minutes>=60) {
+            minutes=0;
+            hours++;
+            if (hours>=24) {
+              hours=0;
+            }
+          }
+        }
+
         count++;
         Serial.println(count);
         if (count > 10) {
@@ -471,7 +489,12 @@ void loop() {
           }
 
           if (bool_get_hour) {
-            
+            Serial.println("");
+            Serial.print(hours);
+            Serial.print(":");
+            Serial.print(minutes);
+            Serial.print(":");
+            Serial.print(seconds);
           }
           
         }
