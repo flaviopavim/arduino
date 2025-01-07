@@ -86,12 +86,13 @@ String randColor() {
     return "#" + randString;
 }
 
+/*
 // Matrix to track fixed pixels
-int falled[32][32] = {0};
+//int falled[32][32] = {0};
 
 // Reset the matrix of fixed pixels
 void resetFalled() {
-    memset(falled, 0, sizeof(falled));
+    //memset(falled, 0, sizeof(falled));
 }
 
 // Variables for the falling effect
@@ -167,6 +168,7 @@ void fall() {
         points = 0;
     }
 }
+*/
 
 void disconnectWifi() {
   if (WiFi.status() == WL_CONNECTED) {
@@ -397,55 +399,58 @@ void setTime() {
       HTTPClient http;
       Serial.print("[HTTP] begin...\n");
       if (http.begin(client, api)) {  // HTTP
-        //http.addHeader("Content-Type", "application/json");
+        http.addHeader("Content-Type", "application/json");
         int httpCode = http.GET();
         if (httpCode > 0) {
           Serial.printf("[HTTP] GET... code: %d\n", httpCode);
           if (httpCode == HTTP_CODE_OK || httpCode == HTTP_CODE_MOVED_PERMANENTLY) {
             String get = http.getString();
-            Serial.println(get);
-            const char* json = get.c_str();
-            JsonDocument doc;
-            DeserializationError error = deserializeJson(doc, json);
+            if (get!="") {
+              //Serial.println(get);
+              const char* json = get.c_str();
+              JsonDocument doc;
+              DeserializationError error = deserializeJson(doc, json);
 
-            if (error) {
-              Serial.print(F("deserializeJson() failed: "));
-              Serial.println(error.f_str());
-              return;
-            }
-
-            //Serial.println(String(doc));
-
-            // Supondo que a resposta tenha o formato ISO 8601 como "2025-01-05T14:30:00"
-            String datetime = doc["datetime"];
-            int separatorPos = datetime.indexOf('T');
-            
-            // Extrair a parte da hora e minuto
-            if (separatorPos != -1) {
-              String timePart = datetime.substring(separatorPos + 1);  // "14:30:00"
-              int colonPos = timePart.indexOf(':');
-              if (colonPos != -1) {
-                hours = timePart.substring(0, colonPos).toInt();  // "14"
-                minutes = timePart.substring(colonPos + 1, colonPos + 3).toInt();  // "30"
-                //seconds = timePart.substring(colonPos + 4, colonPos + 6).toInt();  // "30"
-                seconds = 0;
+              if (error) {
+                Serial.print(F("deserializeJson() failed: "));
+                Serial.println(error.f_str());
+                return;
               }
+
+              //Serial.println(String(doc));
+
+              // Supondo que a resposta tenha o formato ISO 8601 como "2025-01-05T14:30:00"
+              String datetime = doc["datetime"];
+              int separatorPos = datetime.indexOf('T');
+              
+              // Extrair a parte da hora e minuto
+              if (separatorPos != -1) {
+                String timePart = datetime.substring(separatorPos + 1);  // "14:30:00"
+                int colonPos = timePart.indexOf(':');
+                if (colonPos != -1) {
+                  hours = timePart.substring(0, colonPos).toInt();  // "14"
+                  minutes = timePart.substring(colonPos + 1, colonPos + 3).toInt();  // "30"
+                  seconds = timePart.substring(colonPos + 4, colonPos + 6).toInt();  // "30"
+                  //seconds = 0;
+                }
+              }
+
+              // Exibir as variáveis de hora e minuto
+              Serial.print("Hour: ");
+              Serial.println(hours);
+              Serial.print("Minutes: ");
+              Serial.println(minutes);
+              Serial.print("Seconds: ");
+              Serial.println(seconds);
+
+              bool_get_hour=true;
+
+              //addNumberToMatrix(obj_one, 0+1, 0+1);   // Adiciona o número 1.
+              //addNumberToMatrix(obj_two, 4+1, 0+1);   // Adiciona o número 2 (com espaço de 1 coluna).
+              //addNumberToMatrix(obj_three, 8+1, 0+1); // Adiciona o número 3.
+              //addNumberToMatrix(obj_four, 12+1, 0+1); // Adiciona o número 4.
+
             }
-
-            // Exibir as variáveis de hora e minuto
-            Serial.print("Hour: ");
-            Serial.println(hours);
-            Serial.print("Minutes: ");
-            Serial.println(minutes);
-            Serial.print("Seconds: ");
-            Serial.println(seconds);
-
-            bool_get_hour=true;
-
-            addNumberToMatrix(obj_one, 0+1, 0+1);   // Adiciona o número 1.
-            addNumberToMatrix(obj_two, 4+1, 0+1);   // Adiciona o número 2 (com espaço de 1 coluna).
-            addNumberToMatrix(obj_three, 8+1, 0+1); // Adiciona o número 3.
-            addNumberToMatrix(obj_four, 12+1, 0+1); // Adiciona o número 4.
 
 
           }
@@ -461,7 +466,7 @@ void setup() {
     Serial.begin(9600);
     FastLED.addLeds<WS2811, 2, RGB>(leds, NUM_LEDS);
     FastLED.setBrightness(10);
-    resetFalled();
+    //resetFalled();
 
     setTime();
 }
@@ -489,12 +494,25 @@ void loop() {
         }
 
         if (bool_get_hour) {
+          int hour1 = hours / 10;      // Primeiro dígito da hora
+          int hour2 = hours % 10;      // Segundo dígito da hora
+
+          int minute1 = minutes / 10;  // Primeiro dígito dos minutos
+          int minute2 = minutes % 10;  // Segundo dígito dos minutos
+
+          int second1 = seconds / 10;  // Primeiro dígito dos segundos
+          int second2 = seconds % 10;  // Segundo dígito dos segundos
+
+          // Exibindo os valores
           Serial.println("");
-          Serial.print(hours);
+          Serial.print(hour1);
+          Serial.print(hour2);
           Serial.print(":");
-          Serial.print(minutes);
+          Serial.print(minute1);
+          Serial.print(minute2);
           Serial.print(":");
-          Serial.print(seconds);
+          Serial.print(second1);
+          Serial.print(second2);
           Serial.println("");
         }
 
@@ -503,7 +521,7 @@ void loop() {
         if (count > 10) {
           count=0;
 
-          resetFalled();
+          //resetFalled();
 
           if (!bool_get_hour) {
             setTime();
@@ -515,8 +533,8 @@ void loop() {
    
     }
 
-    all("#000000");
-    fall();
+    //all("#000000");
+    //fall();
     //draw(); 
     FastLED.show();
 }
