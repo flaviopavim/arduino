@@ -372,6 +372,11 @@ void drawNumber(int digit) {
 
 bool bool_get_hour=false;
 void setTime() {
+  Serial.println("Conectando com essa bagaça...");
+  WiFiMulti.addAP(ssid, pass);
+  delay(2);
+  wifiConnected = connectWifi();
+  delay(15);
   if (wifiConnected) {
     Serial.println("Buscando hora certa...");
     if (WiFiMulti.run() == WL_CONNECTED) {
@@ -441,9 +446,7 @@ void setup() {
     FastLED.setBrightness(10);
     resetFalled();
 
-    Serial.println("Conectando com essa bagaça...");
-    WiFiMulti.addAP(ssid, pass);
-    wifiConnected = connectWifi();
+    
     setTime();
   
 }
@@ -468,7 +471,7 @@ void loop() {
           }
 
           if (bool_get_hour) {
-
+            
           }
           
         }
