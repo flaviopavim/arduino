@@ -531,15 +531,15 @@ void loop() {
 
           // Exibindo os valores
           //Serial.println("");
-          Serial.print(hour1);
-          Serial.print(hour2);
-          Serial.print(":");
-          Serial.print(minute1);
-          Serial.print(minute2);
-          Serial.print(":");
-          Serial.print(second1);
-          Serial.print(second2);
-          Serial.println("");
+          //Serial.print(hour1);
+          //Serial.print(hour2);
+          //Serial.print(":");
+          //Serial.print(minute1);
+          //Serial.print(minute2);
+          //Serial.print(":");
+          //Serial.print(second1);
+          //Serial.print(second2);
+          //Serial.println("");
 
           drawNumber(hour1,0+x);
           drawNumber(hour2,4+x);
@@ -562,7 +562,7 @@ void loop() {
 
         count++;
         //Serial.println(count);
-        if (count > 60) {
+        if (count > 60*15) { // a cada quinze minutos busca a hora denovo
           count=0;
           //resetFalled();
           //if (!bool_get_hour) {
