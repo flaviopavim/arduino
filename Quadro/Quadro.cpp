@@ -272,13 +272,13 @@ int obj_two[5][3] = {
 int obj_three[5][3] = {
   {1, 1, 1},
   {0, 0, 1},
-  {0, 1, 1},
+  {1, 1, 1},
   {0, 0, 1},
   {1, 1, 1},
 };
 
 int obj_four[5][3] = {
-  {1, 0, 1},
+  {0, 1, 1},
   {1, 0, 1},
   {1, 1, 1},
   {0, 0, 1},
@@ -343,7 +343,15 @@ void draw() {
   for (int y = 0; y < 8; y++) {
     for (int x = 0; x < 32; x++) {
       if (matrix[x][y] > 0) {
-        String c = randColor(); // Cor branca.
+        String c = "#3333ff"; //Azul
+        int r=random(0, 8); //mais chances pro azul
+        if (r==0) {
+          c = "#ff3333"; //vermelho
+        } else if (r==1) {
+          c = "#33ff33"; //verde
+        } else if (r==2) {
+          c = "#ffff33"; //amarelo
+        }
         pixel(x + 1, y + 1, c);  // Desenha o pixel (ajuste de índice para 1-based).
       }
     }
@@ -536,7 +544,6 @@ void loop() {
           drawNumber(hour1,0+x);
           drawNumber(hour2,4+x);
 
-
           drawNumber(10,8+x);
 
           drawNumber(minute1,12+x);
@@ -549,7 +556,7 @@ void loop() {
 
         }
 
-        if (minutes%10==0) {
+        if (seconds==0) {
           resetFalled();
         }
 
