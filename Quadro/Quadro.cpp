@@ -7,7 +7,8 @@
 #include <Espalexa.h>
 #include <ArduinoJson.h>
 
-String api = "http://worldtimeapi.org/api/timezone/America/Sao_Paulo";
+//String api = "http://worldtimeapi.org/api/timezone/America/Sao_Paulo";
+String api = "http://flaviopavim.com.br/api/datetime.php";
 const char *ssid="Flavio"; // Nome do WiFi
 const char *pass="Rockandroll#"; // Senha do WiFi
 
@@ -344,115 +345,120 @@ int hours = 0;
 int minutes = 0;
 int seconds = 0;
 
+int hour1 = 0;
+int hour2 = 0;
+int minute1 = 0;
+int minute2 = 0;
+int second1 = 0;
+int second2 = 0;
+
 // Função para retornar o objeto correto baseado no dígito
-void drawNumber(int digit) {
+void drawNumber(int digit, int x) {
   // Usando uma matriz para representar a posição e o número.
   switch (digit) {
     case 0:
-      addNumberToMatrix(obj_zero, 0+1, 0+1);  // Adiciona o número 0
+      addNumberToMatrix(obj_zero, x+1, 0+1);  // Adiciona o número 0
       break;
     case 1:
-      addNumberToMatrix(obj_one, 0+1, 0+1);  // Adiciona o número 1
+      addNumberToMatrix(obj_one, x+1, 0+1);  // Adiciona o número 1
       break;
     case 2:
-      addNumberToMatrix(obj_two, 0+1, 0+1);  // Adiciona o número 2
+      addNumberToMatrix(obj_two, x+1, 0+1);  // Adiciona o número 2
       break;
     case 3:
-      addNumberToMatrix(obj_three, 0+1, 0+1);  // Adiciona o número 3
+      addNumberToMatrix(obj_three, x+1, 0+1);  // Adiciona o número 3
       break;
     case 4:
-      addNumberToMatrix(obj_four, 0+1, 0+1);  // Adiciona o número 4
+      addNumberToMatrix(obj_four, x+1, 0+1);  // Adiciona o número 4
       break;
     case 5:
-      addNumberToMatrix(obj_five, 0+1, 0+1);  // Adiciona o número 5
+      addNumberToMatrix(obj_five, x+1, 0+1);  // Adiciona o número 5
       break;
     case 6:
-      addNumberToMatrix(obj_six, 0+1, 0+1);  // Adiciona o número 6
+      addNumberToMatrix(obj_six, x+1, 0+1);  // Adiciona o número 6
       break;
     case 7:
-      addNumberToMatrix(obj_seven, 0+1, 0+1);  // Adiciona o número 7
+      addNumberToMatrix(obj_seven, x+1, 0+1);  // Adiciona o número 7
       break;
     case 8:
-      addNumberToMatrix(obj_eight, 0+1, 0+1);  // Adiciona o número 8
+      addNumberToMatrix(obj_eight, x+1, 0+1);  // Adiciona o número 8
       break;
     case 9:
-      addNumberToMatrix(obj_nine, 0+1, 0+1);  // Adiciona o número 9
+      addNumberToMatrix(obj_nine, x+1, 0+1);  // Adiciona o número 9
       break;
     default:
-      addNumberToMatrix(obj_zero, 0+1, 0+1);  // Adiciona o número 0 por padrão
+      addNumberToMatrix(obj_zero, x+1, 0+1);  // Adiciona o número 0 por padrão
       break;
   }
 }
 
 bool bool_get_hour=false;
 void setTime() {
-  //Serial.println("Conectando com essa bagaça...");
   WiFiMulti.addAP(ssid, pass);
-  //delay(2);
-  //disconnectWifi();
+  delay(2);
+  disconnectWifi();
   wifiConnected = connectWifi();
-  //delay(15);
+  delay(15);
+  
   if (wifiConnected) {
     Serial.println("Buscando hora certa...");
+    
     if (WiFiMulti.run() == WL_CONNECTED) {
       WiFiClient client;
       HTTPClient http;
       Serial.print("[HTTP] begin...\n");
+      
       if (http.begin(client, api)) {  // HTTP
         http.addHeader("Content-Type", "application/json");
         int httpCode = http.GET();
+        
         if (httpCode > 0) {
           Serial.printf("[HTTP] GET... code: %d\n", httpCode);
+          
           if (httpCode == HTTP_CODE_OK || httpCode == HTTP_CODE_MOVED_PERMANENTLY) {
             String get = http.getString();
-            if (get!="") {
-              //Serial.println(get);
-              const char* json = get.c_str();
-              JsonDocument doc;
-              DeserializationError error = deserializeJson(doc, json);
+            
+            if (get != "") {
+              Serial.println(get);
 
-              if (error) {
-                Serial.print(F("deserializeJson() failed: "));
-                Serial.println(error.f_str());
-                return;
-              }
-
-              //Serial.println(String(doc));
-
-              // Supondo que a resposta tenha o formato ISO 8601 como "2025-01-05T14:30:00"
-              String datetime = doc["datetime"];
-              int separatorPos = datetime.indexOf('T');
+              // Processando a data e hora
+              String datetime = get;  // Exemplo: "2025-01-06 22:33:51"
+              int spacePos = datetime.indexOf(' ');  // Localiza o espaço entre data e hora
               
-              // Extrair a parte da hora e minuto
-              if (separatorPos != -1) {
-                String timePart = datetime.substring(separatorPos + 1);  // "14:30:00"
-                int colonPos = timePart.indexOf(':');
-                if (colonPos != -1) {
-                  hours = timePart.substring(0, colonPos).toInt();  // "14"
-                  minutes = timePart.substring(colonPos + 1, colonPos + 3).toInt();  // "30"
-                  seconds = timePart.substring(colonPos + 4, colonPos + 6).toInt();  // "30"
-                  //seconds = 0;
+              if (spacePos != -1) {
+                String timePart = datetime.substring(spacePos + 1);  // Obtém a parte da hora (22:33:51)
+                
+                int firstColon = timePart.indexOf(':');
+                int secondColon = timePart.indexOf(':', firstColon + 1);
+                
+                if (firstColon != -1 && secondColon != -1) {
+                  hours = timePart.substring(0, firstColon).toInt();  // "22"
+                  minutes = timePart.substring(firstColon + 1, secondColon).toInt();  // "33"
+                  seconds = timePart.substring(secondColon + 1).toInt();  // "51"
+
+                  // Extraindo os dígitos separadamente
+                  hour1 = hours / 10;
+                  hour2 = hours % 10;
+                  minute1 = minutes / 10;
+                  minute2 = minutes % 10;
+                  second1 = seconds / 10;
+                  second2 = seconds % 10;
+
+                  // Imprimindo os valores para depuração
+                  Serial.print("Hora: ");
+                  Serial.print(hour1);
+                  Serial.print(hour2);
+                  Serial.print(":");
+                  Serial.print(minute1);
+                  Serial.print(minute2);
+                  Serial.print(":");
+                  Serial.print(second1);
+                  Serial.println(second2);
                 }
               }
 
-              // Exibir as variáveis de hora e minuto
-              Serial.print("Hour: ");
-              Serial.println(hours);
-              Serial.print("Minutes: ");
-              Serial.println(minutes);
-              Serial.print("Seconds: ");
-              Serial.println(seconds);
-
-              bool_get_hour=true;
-
-              //addNumberToMatrix(obj_one, 0+1, 0+1);   // Adiciona o número 1.
-              //addNumberToMatrix(obj_two, 4+1, 0+1);   // Adiciona o número 2 (com espaço de 1 coluna).
-              //addNumberToMatrix(obj_three, 8+1, 0+1); // Adiciona o número 3.
-              //addNumberToMatrix(obj_four, 12+1, 0+1); // Adiciona o número 4.
-
+              bool_get_hour = true;
             }
-
-
           }
         }
       }
@@ -461,13 +467,13 @@ void setTime() {
 }
 
 
+
 // Arduino setup function
 void setup() {
     Serial.begin(9600);
     FastLED.addLeds<WS2811, 2, RGB>(leds, NUM_LEDS);
     FastLED.setBrightness(10);
     //resetFalled();
-
     setTime();
 }
 
@@ -514,11 +520,21 @@ void loop() {
           Serial.print(second1);
           Serial.print(second2);
           Serial.println("");
+
+          drawNumber(hour1,0);
+          drawNumber(hour2,4);
+
+          drawNumber(minute1,8);
+          drawNumber(minute2,12);
+
+          drawNumber(second1,16);
+          drawNumber(second2,20);
+
         }
 
         count++;
         //Serial.println(count);
-        if (count > 10) {
+        if (count > 5) {
           count=0;
 
           //resetFalled();
@@ -533,8 +549,8 @@ void loop() {
    
     }
 
-    //all("#000000");
+    all("#000000");
     //fall();
-    //draw(); 
+    draw(); 
     FastLED.show();
 }
