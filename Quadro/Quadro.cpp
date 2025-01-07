@@ -562,17 +562,12 @@ void loop() {
 
         count++;
         //Serial.println(count);
-        if (count > 5) {
+        if (count > 60) {
           count=0;
-
           //resetFalled();
-
-          if (!bool_get_hour) {
+          //if (!bool_get_hour) {
             setTime();
-          }
-
-          
-          
+          //}
         }
    
     }
