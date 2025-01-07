@@ -168,6 +168,17 @@ void fall() {
     }
 }
 
+void disconnectWifi() {
+  if (WiFi.status() == WL_CONNECTED) {
+    Serial.println("Disconnecting from WiFi...");
+    WiFi.disconnect(); // Desconecta da rede Wi-Fi atual
+    WiFi.mode(WIFI_OFF); // Desativa o modo Wi-Fi
+    Serial.println("WiFi disconnected.");
+  } else {
+    Serial.println("WiFi is not connected.");
+  }
+}
+
 boolean connectWifi() {
   boolean state = true;
   int i = 0;
@@ -373,11 +384,12 @@ void drawNumber(int digit) {
 
 bool bool_get_hour=false;
 void setTime() {
-  Serial.println("Conectando com essa bagaça...");
+  //Serial.println("Conectando com essa bagaça...");
   WiFiMulti.addAP(ssid, pass);
-  delay(2);
+  //delay(2);
+  //disconnectWifi();
   wifiConnected = connectWifi();
-  delay(15);
+  //delay(15);
   if (wifiConnected) {
     Serial.println("Buscando hora certa...");
     if (WiFiMulti.run() == WL_CONNECTED) {
@@ -415,7 +427,8 @@ void setTime() {
               if (colonPos != -1) {
                 hours = timePart.substring(0, colonPos).toInt();  // "14"
                 minutes = timePart.substring(colonPos + 1, colonPos + 3).toInt();  // "30"
-                seconds = timePart.substring(colonPos + 4, colonPos + 6).toInt();  // "30"
+                //seconds = timePart.substring(colonPos + 4, colonPos + 6).toInt();  // "30"
+                seconds = 0;
               }
             }
 
@@ -450,9 +463,7 @@ void setup() {
     FastLED.setBrightness(10);
     resetFalled();
 
-    
     setTime();
-  
 }
 
 int count = 0;
@@ -465,20 +476,30 @@ void loop() {
         previousMillis = currentMillis;
 
         seconds++;
-        if (seconds>=60) {
+        if (seconds==60) {
           seconds=0;
           minutes++;
-          if (minutes>=60) {
+          if (minutes==60) {
             minutes=0;
             hours++;
-            if (hours>=24) {
+            if (hours==24) {
               hours=0;
             }
           }
         }
 
+        if (bool_get_hour) {
+          Serial.println("");
+          Serial.print(hours);
+          Serial.print(":");
+          Serial.print(minutes);
+          Serial.print(":");
+          Serial.print(seconds);
+          Serial.println("");
+        }
+
         count++;
-        Serial.println(count);
+        //Serial.println(count);
         if (count > 10) {
           count=0;
 
@@ -488,14 +509,7 @@ void loop() {
             setTime();
           }
 
-          if (bool_get_hour) {
-            Serial.println("");
-            Serial.print(hours);
-            Serial.print(":");
-            Serial.print(minutes);
-            Serial.print(":");
-            Serial.print(seconds);
-          }
+          
           
         }
    
