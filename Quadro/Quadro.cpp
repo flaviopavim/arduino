@@ -504,7 +504,7 @@ void loop() {
           int second2 = seconds % 10;  // Segundo dígito dos segundos
 
           // Exibindo os valores
-          Serial.println("");
+          //Serial.println("");
           Serial.print(hour1);
           Serial.print(hour2);
           Serial.print(":");
