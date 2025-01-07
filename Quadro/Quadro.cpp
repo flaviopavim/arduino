@@ -236,6 +236,15 @@ void addNumberToMatrix(int number[5][3], int startX, int startY) {
   }
 }
 
+int obj_dots[5][3] = {
+  {0, 0, 0},
+  {0, 1, 0},
+  {0, 0, 0},
+  {0, 1, 0},
+  {0, 0, 0},
+};
+
+
 int obj_zero[5][3] = {
   {1, 1, 1},
   {1, 0, 1},
@@ -386,6 +395,9 @@ void drawNumber(int digit, int x) {
     case 9:
       addNumberToMatrix(obj_nine, x+1, 0+1);  // Adiciona o número 9
       break;
+    case 10:
+      addNumberToMatrix(obj_dots, x+1, 0+1);  // Adiciona os pontos
+      break;
     default:
       addNumberToMatrix(obj_zero, x+1, 0+1);  // Adiciona o número 0 por padrão
       break;
@@ -524,11 +536,16 @@ void loop() {
           drawNumber(hour1,0);
           drawNumber(hour2,4);
 
-          drawNumber(minute1,8);
-          drawNumber(minute2,12);
 
-          drawNumber(second1,16);
-          drawNumber(second2,20);
+          drawNumber(10,8);
+
+          drawNumber(minute1,12);
+          drawNumber(minute2,16);
+
+          drawNumber(10,20);
+
+          drawNumber(second1,24);
+          drawNumber(second2,28);
 
         }
 
