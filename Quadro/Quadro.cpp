@@ -87,13 +87,13 @@ String randColor() {
     return "#" + randString;
 }
 
-/*
+
 // Matrix to track fixed pixels
-//int falled[32][32] = {0};
+int falled[32][32] = {0};
 
 // Reset the matrix of fixed pixels
 void resetFalled() {
-    //memset(falled, 0, sizeof(falled));
+    memset(falled, 0, sizeof(falled));
 }
 
 // Variables for the falling effect
@@ -169,7 +169,7 @@ void fall() {
         points = 0;
     }
 }
-*/
+
 
 void disconnectWifi() {
   if (WiFi.status() == WL_CONNECTED) {
@@ -343,7 +343,7 @@ void draw() {
   for (int y = 0; y < 8; y++) {
     for (int x = 0; x < 32; x++) {
       if (matrix[x][y] > 0) {
-        String c = "#ffffff"; // Cor branca.
+        String c = randColor(); // Cor branca.
         pixel(x + 1, y + 1, c);  // Desenha o pixel (ajuste de índice para 1-based).
       }
     }
@@ -478,14 +478,12 @@ void setTime() {
   }
 }
 
-
-
 // Arduino setup function
 void setup() {
     Serial.begin(9600);
     FastLED.addLeds<WS2811, 2, RGB>(leds, NUM_LEDS);
     FastLED.setBrightness(10);
-    //resetFalled();
+    resetFalled();
     setTime();
 }
 
@@ -511,6 +509,8 @@ void loop() {
           }
         }
 
+        int x=0;
+
         if (bool_get_hour) {
           int hour1 = hours / 10;      // Primeiro dígito da hora
           int hour2 = hours % 10;      // Segundo dígito da hora
@@ -533,20 +533,24 @@ void loop() {
           Serial.print(second2);
           Serial.println("");
 
-          drawNumber(hour1,0);
-          drawNumber(hour2,4);
+          drawNumber(hour1,0+x);
+          drawNumber(hour2,4+x);
 
 
-          drawNumber(10,8);
+          drawNumber(10,8+x);
 
-          drawNumber(minute1,12);
-          drawNumber(minute2,16);
+          drawNumber(minute1,12+x);
+          drawNumber(minute2,16+x);
 
-          drawNumber(10,20);
+          drawNumber(10,20+x);
 
-          drawNumber(second1,24);
-          drawNumber(second2,28);
+          drawNumber(second1,24+x);
+          drawNumber(second2,28+x);
 
+        }
+
+        if (minutes%10==0) {
+          resetFalled();
         }
 
         count++;
@@ -567,7 +571,7 @@ void loop() {
     }
 
     all("#000000");
-    //fall();
+    fall();
     draw(); 
     FastLED.show();
 }
