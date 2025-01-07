@@ -372,58 +372,61 @@ void drawNumber(int digit) {
 
 
 void setTime() {
-  if (WiFiMulti.run() == WL_CONNECTED) {
-    WiFiClient client;
-    HTTPClient http;
-    Serial.print("[HTTP] begin...\n");
-    if (http.begin(client, api)) {  // HTTP
-      http.addHeader("Content-Type", "application/json");
-      int httpCode = http.GET();
-      if (httpCode > 0) {
-        Serial.printf("[HTTP] GET... code: %d\n", httpCode);
-        if (httpCode == HTTP_CODE_OK || httpCode == HTTP_CODE_MOVED_PERMANENTLY) {
-          String get = http.getString();
-          Serial.println(get);
-          const char* json = get.c_str();
-          JsonDocument doc;
-          DeserializationError error = deserializeJson(doc, json);
+  if (wifiConnected) {
+    Serial.println("Buscando hora certa...");
+    if (WiFiMulti.run() == WL_CONNECTED) {
+      WiFiClient client;
+      HTTPClient http;
+      Serial.print("[HTTP] begin...\n");
+      if (http.begin(client, api)) {  // HTTP
+        http.addHeader("Content-Type", "application/json");
+        int httpCode = http.GET();
+        if (httpCode > 0) {
+          Serial.printf("[HTTP] GET... code: %d\n", httpCode);
+          if (httpCode == HTTP_CODE_OK || httpCode == HTTP_CODE_MOVED_PERMANENTLY) {
+            String get = http.getString();
+            Serial.println(get);
+            const char* json = get.c_str();
+            JsonDocument doc;
+            DeserializationError error = deserializeJson(doc, json);
 
-          if (error) {
-            Serial.print(F("deserializeJson() failed: "));
-            Serial.println(error.f_str());
-            return;
-          }
-
-          //Serial.println(String(doc));
-
-          // Supondo que a resposta tenha o formato ISO 8601 como "2025-01-05T14:30:00"
-          String datetime = doc["datetime"];
-          int separatorPos = datetime.indexOf('T');
-          
-          // Extrair a parte da hora e minuto
-          if (separatorPos != -1) {
-            String timePart = datetime.substring(separatorPos + 1);  // "14:30:00"
-            int colonPos = timePart.indexOf(':');
-            if (colonPos != -1) {
-              hour = timePart.substring(0, colonPos).toInt();  // "14"
-              minute = timePart.substring(colonPos + 1, colonPos + 3).toInt();  // "30"
+            if (error) {
+              Serial.print(F("deserializeJson() failed: "));
+              Serial.println(error.f_str());
+              return;
             }
+
+            //Serial.println(String(doc));
+
+            // Supondo que a resposta tenha o formato ISO 8601 como "2025-01-05T14:30:00"
+            String datetime = doc["datetime"];
+            int separatorPos = datetime.indexOf('T');
+            
+            // Extrair a parte da hora e minuto
+            if (separatorPos != -1) {
+              String timePart = datetime.substring(separatorPos + 1);  // "14:30:00"
+              int colonPos = timePart.indexOf(':');
+              if (colonPos != -1) {
+                hour = timePart.substring(0, colonPos).toInt();  // "14"
+                minute = timePart.substring(colonPos + 1, colonPos + 3).toInt();  // "30"
+              }
+            }
+
+            // Exibir as variáveis de hora e minuto
+            Serial.print("Hour: ");
+            Serial.println(hour);
+            Serial.print("Minute: ");
+            Serial.println(minute);
+
+            //drawNumber(2);
+
+            addNumberToMatrix(obj_one, 0+1, 0+1);   // Adiciona o número 1.
+            addNumberToMatrix(obj_two, 4+1, 0+1);   // Adiciona o número 2 (com espaço de 1 coluna).
+            addNumberToMatrix(obj_three, 8+1, 0+1); // Adiciona o número 3.
+            addNumberToMatrix(obj_four, 12+1, 0+1); // Adiciona o número 4.
+
+
           }
-
-          // Exibir as variáveis de hora e minuto
-          Serial.print("Hour: ");
-          Serial.println(hour);
-          Serial.print("Minute: ");
-          Serial.println(minute);
-
-          //drawNumber(2);
-
-          addNumberToMatrix(obj_one, 0+1, 0+1);   // Adiciona o número 1.
-          addNumberToMatrix(obj_two, 4+1, 0+1);   // Adiciona o número 2 (com espaço de 1 coluna).
-          addNumberToMatrix(obj_three, 8+1, 0+1); // Adiciona o número 3.
-          addNumberToMatrix(obj_four, 12+1, 0+1); // Adiciona o número 4.
-
-
         }
       }
     }
@@ -441,19 +444,13 @@ void setup() {
     Serial.println("Conectando com essa bagaça...");
     WiFiMulti.addAP(ssid, pass);
     wifiConnected = connectWifi();
+    setTime();
   
-   if (wifiConnected) {
-      Serial.println("Conectado com Wifi");
-      setTime();
-    }
 }
 
-// Main loop function
 int count = 0;
 unsigned long previousMillis = 0;
 const long interval = 1000;
-
-
 
 void loop() {
     unsigned long currentMillis = millis();
@@ -461,18 +458,14 @@ void loop() {
         previousMillis = currentMillis;
         count++;
         Serial.println(count);
-        if (count > 120) {
+        if (count > 10) {
+          count=0;
 
-          //if (wifiConnected) {
-          //  Serial.println("Conectado com Wifi");
-          //  setTime();
-          //}
           resetFalled();
+          setTime();
         }
-
-        
+   
     }
-    
 
     all("#000000");
     fall();
