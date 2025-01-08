@@ -162,6 +162,25 @@ void buzz(int value) {
 
 /************************************************************************************************************************
 ************************************************************************************************************************
+************************************************************************************************************************/
+
+double calculateEnergy(double startX, double startY, double startZ, double endX, double endY, double endZ) {
+    double distance = sqrt(pow(endX - startX, 2) + pow(endY - startY, 2) + pow(endZ - startZ, 2));
+    return distance * ENERGY_PER_UNIT; // ENERGY_PER_UNIT depende do tipo de motor
+}
+
+void updateMapWithSensors() {
+    for (int i = 0; i < 10; i++) {
+        if (boolUltrasonic[i]) {
+            int obsX = actualX + cos(degrees + i * SENSOR_ANGLE_OFFSET) * ULTRASONIC_RANGE;
+            int obsZ = actualZ + sin(degrees + i * SENSOR_ANGLE_OFFSET) * ULTRASONIC_RANGE;
+            mapArray[actualY][obsZ][obsX] = 5; // Obstáculo detectado
+        }
+    }
+}
+
+/************************************************************************************************************************
+************************************************************************************************************************
 ************************************************************************************************************************
 
    Controles direcionais: subir, descer, virar pra esquerda/direita, ir pra frente/trás/esquerda/direita
