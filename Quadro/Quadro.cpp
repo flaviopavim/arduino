@@ -334,6 +334,9 @@ void setupMatrix() {
   addNumberToMatrix(obj_four, 12+1, 0+1); // Adiciona o número 4.
 }
 
+
+String actualColor="#ffffff";
+
 // Função para desenhar a matriz.
 void draw() {
 
@@ -343,16 +346,7 @@ void draw() {
   for (int y = 0; y < 8; y++) {
     for (int x = 0; x < 32; x++) {
       if (matrix[x][y] > 0) {
-        String c = "#3333ff"; //Azul
-        int r=random(0, 8); //mais chances pro azul
-        if (r==0) {
-          c = "#ff3333"; //vermelho
-        } else if (r==1) {
-          c = "#33ff33"; //verde
-        } else if (r==2) {
-          c = "#ffff33"; //amarelo
-        }
-        pixel(x + 1, y + 1, c);  // Desenha o pixel (ajuste de índice para 1-based).
+        pixel(x + 1, y + 1, actualColor);  // Desenha o pixel (ajuste de índice para 1-based).
       }
     }
   }
@@ -499,6 +493,19 @@ int count = 0;
 unsigned long previousMillis = 0;
 const long interval = 1000;
 
+void changeColor() {
+    String c = "#3333ff"; //Azul
+    int r=random(0, 8); //mais chances pro azul
+    if (r==0) {
+      c = "#ff3333"; //vermelho
+    } else if (r==1) {
+      c = "#33ff33"; //verde
+    } else if (r==2) {
+      c = "#ffff33"; //amarelo
+    }
+    return c;
+}
+
 void loop() {
     unsigned long currentMillis = millis();
     if (previousMillis == 0 || currentMillis - previousMillis >= interval) {
@@ -569,6 +576,8 @@ void loop() {
             setTime();
           //}
         }
+
+        actualColor=changeColor(); //muda a cor a cada 1 segundo
    
     }
 
