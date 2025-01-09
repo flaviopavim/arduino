@@ -11,6 +11,7 @@
 String api = "http://flaviopavim.com.br/api/datetime.php";
 const char *ssid="Flavio"; // Nome do WiFi
 const char *pass="Rockandroll#"; // Senha do WiFi
+const int buzzer = D8; // Buzzer is connected to Arduino pin 2
 
 boolean connectWifi();
 ESP8266WiFiMulti WiFiMulti;
@@ -480,6 +481,98 @@ void setTime() {
   }
 }
 
+/*
+  Buzzer
+*/
+
+unsigned long previousMillis = 0;
+unsigned long currentMillis = millis();
+
+
+//const int buzzer = 2; // Pino do buzzer conectado ao Arduino
+//unsigned long previousMillis = 0; // Variável para armazenar o tempo anterior
+int alarmStep = 0; // Etapa atual do alarme
+int soundStep = 0; // Etapa atual do som
+bool isToneOn = false; // Estado atual do tom (ligado/desligado)
+
+// Frequências e durações para diferentes sons
+const int setupFrequencies[] = {500, 1000, 1500};
+const int setupDurations[] = {100, 100, 100};
+const int setupSteps = sizeof(setupFrequencies) / sizeof(setupFrequencies[0]);
+
+const int ambulanceFrequencies[] = {1000, 1800};
+const int ambulanceDurations[] = {400, 400};
+const int ambulanceSteps = sizeof(ambulanceFrequencies) / sizeof(ambulanceFrequencies[0]);
+
+const int alarmFrequencies[] = {1000, 1800};
+const int alarmDurations[] = {100, 100};
+const int alarmSteps = sizeof(alarmFrequencies) / sizeof(alarmFrequencies[0]);
+
+// Função para reproduzir a sequência de inicialização
+void playSetup() {
+  soundStep = 0;
+  previousMillis = millis();
+}
+
+// Configuração inicial
+void setupAlarm() {
+  pinMode(buzzer, OUTPUT);
+  playSetup();
+}
+
+// Função genérica para reproduzir uma sequência de tons
+bool playSequence(unsigned long currentMillis, const int frequencies[], const int durations[], int steps, int repeat = 1) {
+  static int repeatCount = 0;
+
+  if (soundStep < steps) {
+    if (!isToneOn && currentMillis - previousMillis >= durations[soundStep]) {
+      tone(buzzer, frequencies[soundStep]);
+      previousMillis = currentMillis;
+      isToneOn = true;
+    } else if (isToneOn && currentMillis - previousMillis >= durations[soundStep]) {
+      noTone(buzzer);
+      previousMillis = currentMillis;
+      isToneOn = false;
+      soundStep++;
+    }
+  } else {
+    soundStep = 0;
+    repeatCount++;
+    if (repeatCount >= repeat) {
+      repeatCount = 0;
+      return true;
+    }
+  }
+  return false;
+}
+
+// Loop principal
+void loopAlarm() {
+  static bool playingSetup = true;
+  static bool playingAlarm = false;
+  static bool playingAmbulance = false;
+
+  //unsigned long currentMillis = millis();
+
+  if (playingSetup) {
+    if (playSequence(currentMillis, setupFrequencies, setupDurations, setupSteps)) {
+      playingSetup = false;
+      playingAlarm = true;
+    }
+  } else if (playingAlarm) {
+    if (playSequence(currentMillis, alarmFrequencies, alarmDurations, alarmSteps, 32)) {
+      playingAlarm = false;
+      playingAmbulance = true;
+    }
+  } else if (playingAmbulance) {
+    if (playSequence(currentMillis, ambulanceFrequencies, ambulanceDurations, ambulanceSteps, 8)) {
+      playingAmbulance = false;
+    }
+  }
+}
+
+/***************************/
+
 // Arduino setup function
 void setup() {
     Serial.begin(9600);
@@ -487,14 +580,23 @@ void setup() {
     FastLED.setBrightness(10);
     resetFalled();
     setTime();
+
+    pinMode(buzzer, OUTPUT); // Set the buzzer pin as an output
+    setupAlarm();            // Play the setup sound sequence
+    delay(1000);             // Wait for 1 second
 }
 
 int count = 0;
-unsigned long previousMillis = 0;
+
 const long interval = 1000;
 
 void loop() {
-    unsigned long currentMillis = millis();
+
+    if (hours==23 && minutes==57) {
+      loopAlarm();
+    }
+
+    currentMillis = millis();
     if (previousMillis == 0 || currentMillis - previousMillis >= interval) {
         previousMillis = currentMillis;
 
