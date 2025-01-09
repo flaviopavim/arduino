@@ -26,8 +26,7 @@ Espalexa espalexa;
 
 EspalexaDevice* device3; //this is optional
 
-void setup()
-{
+void setup() {
   Serial.begin(115200);
   // Initialise wifi connection
   wifiConnected = connectWifi();
@@ -44,8 +43,7 @@ void setup()
 
     espalexa.begin();
     
-  } else
-  {
+  } else {
     while (1) {
       Serial.println("Cannot connect to WiFi. Please check data and reset the ESP.");
       delay(2500);
@@ -53,8 +51,7 @@ void setup()
   }
 }
  
-void loop()
-{
+void loop() {
    espalexa.loop();
    delay(1);
 }
@@ -84,7 +81,7 @@ void thirdLightChanged(uint8_t brightness) {
 }
 
 // connect to wifi – returns true if successful or false if not
-boolean connectWifi(){
+boolean connectWifi() {
   boolean state = true;
   int i = 0;
   
