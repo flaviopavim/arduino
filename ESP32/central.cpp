@@ -211,8 +211,6 @@ void tetris() {
   }
 }
 
-
-
 bool bool_alarm=false;
 
 // prototypes
@@ -375,7 +373,6 @@ void soundTask() {
   rgb(255,255,255);
 }
 
-
 void soundAmbulance() {
   bip(1000,400);
   bip(1800,400);
@@ -385,7 +382,6 @@ void soundAlarm() {
   bip(1000,100);
   bip(1800,100);
 }
-
 
 void setup() {
 
@@ -444,8 +440,6 @@ void setup() {
     }
 }
 
-
-
 bool bool_water=false;
 int count_water=0;
 
@@ -467,9 +461,6 @@ void loop() {
     } else {
       rgb(255,0,0);
     }
-
-    
-  
 
     if (count==100) { //em média a cada 10 segundos
       count=0;

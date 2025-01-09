@@ -3,7 +3,6 @@ int speakerPin = 8;
 int pinopir = 7;
 
 // Criando as notas musicais (C,D,E,F,G,A,B e derivações ) em função da sua frequência
-
 #define c 261
 #define d 294
 #define e 329
@@ -30,19 +29,19 @@ void setup() {
   pinMode(pinopir, INPUT);
 }
 
-bool alarme=false;
-int contagem=0;
+bool alarm=false;
+int count=0;
 
 void loop() {
   int sensor=digitalRead(pinopir);
   if (sensor==1) {
-    alarme=true;
+    alarm=true;
   }
   if (alarme==true) {
-    contagem++;
-    if (contagem>=3) {
-      contagem=0;
-      alarme=false;
+    count++;
+    if (count>=3) {
+      count=0;
+      alarm=false;
     }
     //beep(speakerPin, c, 70);
     //beep(speakerPin, d, 70);
