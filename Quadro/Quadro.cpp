@@ -493,19 +493,6 @@ int count = 0;
 unsigned long previousMillis = 0;
 const long interval = 1000;
 
-String changeColor() {
-    String c = "#3333ff"; //Azul
-    int r=random(0, 8); //mais chances pro azul
-    if (r==0) {
-      c = "#ff3333"; //vermelho
-    } else if (r==1) {
-      c = "#33ff33"; //verde
-    } else if (r==2) {
-      c = "#ffff33"; //amarelo
-    }
-    return c;
-}
-
 void loop() {
     unsigned long currentMillis = millis();
     if (previousMillis == 0 || currentMillis - previousMillis >= interval) {
@@ -577,7 +564,7 @@ void loop() {
           //}
         }
 
-        actualColor=changeColor(); //muda a cor a cada 1 segundo
+        actualColor=randColor(); //muda a cor a cada 1 segundo
    
     }
 
