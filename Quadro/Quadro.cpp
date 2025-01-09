@@ -493,7 +493,7 @@ int count = 0;
 unsigned long previousMillis = 0;
 const long interval = 1000;
 
-void changeColor() {
+String changeColor() {
     String c = "#3333ff"; //Azul
     int r=random(0, 8); //mais chances pro azul
     if (r==0) {
