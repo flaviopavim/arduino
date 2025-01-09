@@ -592,7 +592,28 @@ const long interval = 1000;
 
 void loop() {
 
-    if (hours==23 && minutes==57) {
+    // Acordar
+    if (hours==7 && minutes>=55 && minutes<=58) {
+      loopAlarm();
+    }
+
+    // Almoço
+    if (hours==10 && minutes>=57 && minutes<=59) {
+      loopAlarm();
+    }
+
+    // Back to work
+    if (hours==13 && minutes>=57 && minutes<=59) {
+      loopAlarm();
+    }
+
+    // Terminar trabalho
+    if (hours==18 && minutes==0) {
+      loopAlarm();
+    }
+
+    // Game
+    if (hours==21 && minutes==30) {
       loopAlarm();
     }
 
