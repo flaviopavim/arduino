@@ -673,15 +673,15 @@ void loop() {
 
         }
 
-        if (seconds==0) {
-          resetFalled();
-        }
+        //if (seconds==0) {
+        //  resetFalled();
+        //}
 
         count++;
         //Serial.println(count);
         if (count > 60*15) { // a cada quinze minutos busca a hora denovo
           count=0;
-          //resetFalled();
+          resetFalled();
           //if (!bool_get_hour) {
             setTime();
           //}
