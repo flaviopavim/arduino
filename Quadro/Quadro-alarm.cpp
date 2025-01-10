@@ -677,7 +677,7 @@ void loop() {
         if (count > 60*15) { // a cada quinze minutos busca a hora denovo
           count=0;
           resetFalled();
-        setTime();
+          setTime();
         }
 
         actualColor=randColor(); //muda a cor a cada 1 segundo
