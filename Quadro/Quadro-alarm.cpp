@@ -88,6 +88,22 @@ String randColor() {
     return "#" + randString;
 }
 
+String pickColor() {
+    int r=random(0,5);
+    if (r==0) {
+        return "#ff3333";
+    } else if (r==1) {
+        return "#ffff33";
+    } else if (r==2) {
+        return "#33ff33";
+    } else if (r==3) {
+        return "#33ffff";
+    } else if (r==4) {
+        return "#3333ff";
+    } else if (r==5) {
+        return "#ff33ff";
+    }
+}
 
 // Matrix to track fixed pixels
 int falled[32][32] = {0};
@@ -680,7 +696,7 @@ void loop() {
           setTime();
         }
 
-        actualColor=randColor(); //muda a cor a cada 1 segundo
+        actualColor=pickColor(); //muda a cor a cada 1 segundo
    
     }
 
