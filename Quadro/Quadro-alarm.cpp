@@ -129,7 +129,7 @@ void fall() {
     for (int x = 0; x < 32; x++) {
         for (int y = 0; y < 32; y++) {
             if (falled[x][31 - y]) {
-                pixel(x + 1, y + 1, "#666666");
+                pixel(x + 1, y + 1, "#222222");
             }
         }
     }
