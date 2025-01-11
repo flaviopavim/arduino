@@ -1,55 +1,52 @@
-//portas e ligações
-int buzzer1 = 2;
-int buzzer2 = 2;
+// Pin assignments for the buzzers
+int buzzer1 = 2; // Pin for buzzer 1
+int buzzer2 = 2; // Pin for buzzer 2
 
-//liga ou desliga o buzzer
-bool boolBuzzer1 = false;
-bool boolBuzzer2 = false;
+// Flags to control whether each buzzer is on or off
+bool boolBuzzer1 = false; // State of buzzer 1
+bool boolBuzzer2 = false; // State of buzzer 2
 
-//inicialização do Arduino
+// Arduino setup function, runs once at startup
 void setup() {
-
+  // No initialization required in this example
 }
 
-//variáveis do loop
-unsigned long previousMillis = 0;
-long interval = 20;
+// Variables for loop timing
+unsigned long previousMillis = 0; // Stores the last time the loop was updated
+long interval = 20;               // Time interval for updates in milliseconds
 
-//magic ;)
+// Main loop function
 void loop() {
-
-  //busca em qual milissegundo está
+  // Get the current time in milliseconds since the Arduino started
   unsigned long currentMillis = millis();
 
-  //se a contagem de milissegundos for igual ao intervalo
+  // Check if the time elapsed since the last update exceeds the interval
   if (currentMillis - previousMillis >= interval) {
-
-    //seta o tempo atual na variável
+    // Update the last recorded time
     previousMillis = currentMillis;
-    
-    //se o boolBuzzer for true
+
+    // Control buzzer 1
     if (boolBuzzer1) {
-      //liga o buzzer
+      // Turn on buzzer 1 at a frequency of 523 Hz
       tone(buzzer1, 523);
     } else {
-      //desligar
+      // Turn off buzzer 1
       noTone(buzzer1);
     }
-    
-    //se o boolBuzzer for true
+
+    // Control buzzer 2
     if (boolBuzzer2) {
-      //liga o buzzer
+      // Turn on buzzer 2 at a frequency of 523 Hz
       tone(buzzer2, 523);
     } else {
-      //desligar
+      // Turn off buzzer 2
       noTone(buzzer2);
     }
 
-    //adiciona o contrário de boolBuzzer
-    //se for false, seta como true
-    //se for true, seta como false
-    boolBuzzer1=!boolBuzzer1;
-    boolBuzzer2=!boolBuzzer2;
-
+    // Toggle the state of the buzzers
+    // If `boolBuzzer1` or `boolBuzzer2` is false, set it to true
+    // If it is true, set it to false
+    boolBuzzer1 = !boolBuzzer1;
+    boolBuzzer2 = !boolBuzzer2;
   }
 }
