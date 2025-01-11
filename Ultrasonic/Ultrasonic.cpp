@@ -3,36 +3,36 @@
 const int echoPin = 8; // Digital pin used by the HC-SR04 Echo (receiver)
 const int trigPin = 7; // Digital pin used by the HC-SR04 Trigger (sender)
 
-Ultrasonic ultrasonic(trigPin, echoPin); // Initializing the pins for the ultrasonic sensor
+Ultrasonic ultrasonic(trigPin, echoPin); // Initializing the ultrasonic sensor with specified pins
 
 int distance; // Variable to store the measured distance (integer)
-String result; // Variable to store the distance as a string
+String result; // Variable to store the distance as a string for printing
 
 void setup() {
-  pinMode(echoPin, INPUT); // Setting the Echo pin as input (receives signals)
-  pinMode(trigPin, OUTPUT); // Setting the Trigger pin as output (sends signals)
-  Serial.begin(9600); // Initializing the Serial communication at 9600 baud
+  pinMode(echoPin, INPUT); // Setting the Echo pin as input (receives signals from the sensor)
+  pinMode(trigPin, OUTPUT); // Setting the Trigger pin as output (sends signals to the sensor)
+  Serial.begin(9600); // Initialize Serial communication at 9600 baud for debugging
 }
 
 void loop() {
-  measureDistance(); // Calling the function to measure the distance
-  Serial.print("Distance: "); // Printing the text on the Serial Monitor
-  Serial.print(result); // Printing the measured distance on the Serial Monitor
-  Serial.println(" cm"); // Printing the unit (cm) on the Serial Monitor
+  measureDistance(); // Call the function to measure the distance
+  Serial.print("Distance: "); // Print a label for the distance measurement
+  Serial.print(result); // Print the measured distance
+  Serial.println(" cm"); // Append the unit (cm) and print to the Serial Monitor
 }
 
 // Function to measure the distance using the HC-SR04 sensor
 void measureDistance() {
-  digitalWrite(trigPin, LOW); // Set the Trigger pin to LOW
-  delayMicroseconds(2); // Wait for 2 microseconds
-  digitalWrite(trigPin, HIGH); // Set the Trigger pin to HIGH
-  delayMicroseconds(10); // Wait for 10 microseconds
+  digitalWrite(trigPin, LOW); // Ensure the Trigger pin starts at LOW
+  delayMicroseconds(2); // Wait for 2 microseconds for a clean pulse
+  digitalWrite(trigPin, HIGH); // Set the Trigger pin to HIGH to send a signal
+  delayMicroseconds(10); // Wait for 10 microseconds to complete the pulse
   digitalWrite(trigPin, LOW); // Set the Trigger pin back to LOW
   
-  // The Ranging function converts the Echo response time to distance in centimeters
-  // and stores it in the variable 'distance'
-  distance = ultrasonic.Ranging(CM); // Measure the distance in centimeters
-  result = String(distance); // Convert the distance to a string and store it in 'result'
+  // Use the Ranging function to measure the distance in centimeters
+  // The result is stored in the 'distance' variable
+  distance = ultrasonic.Ranging(CM); // Get the distance in centimeters
+  result = String(distance); // Convert the distance to a string for Serial output
   
-  delay(500); // Wait for 500 milliseconds before the next measurement
+  delay(500); // Wait for 500 milliseconds before taking the next measurement
 }
