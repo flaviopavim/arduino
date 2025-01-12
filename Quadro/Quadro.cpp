@@ -430,13 +430,17 @@ void setTime() {
           Serial.printf("[HTTP] GET... code: %d\n", httpCode);
           
           if (httpCode == HTTP_CODE_OK || httpCode == HTTP_CODE_MOVED_PERMANENTLY) {
-            String get = http.getString();
-            
-            if (get != "") {
-              Serial.println(get);
+            String payload = http.getString();
+            StaticJsonDocument<256> doc;
+            DeserializationError error = deserializeJson(doc, payload);
 
-              // Processando a data e hora
-              String datetime = get;  // Exemplo: "2025-01-06 22:33:51"
+            if (!error) {
+
+              String datetime = doc["datetime"]; // "2025-01-12 14:02:39"
+              //String date = datetime.substring(0, 10); // "2025-01-12"
+              //String time = datetime.substring(11, 16); // "14:02"
+              //Serial.println("Data: " + date + " Hora: " + time);
+            
               int spacePos = datetime.indexOf(' ');  // Localiza o espaço entre data e hora
               
               if (spacePos != -1) {
