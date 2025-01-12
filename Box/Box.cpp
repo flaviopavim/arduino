@@ -7,7 +7,6 @@
 */
 
 #include <Wire.h>
-//#include <MPU6050.h>
 #include <Adafruit_Sensor.h>
 #include <Adafruit_ADXL343.h>
 
@@ -22,13 +21,11 @@ float pitch = 0;
 float roll = 0;
 float yaw = 0;
 
-void setup() 
-{
+void setup() {
   Serial.begin(115200);
 
   // Initialize MPU6050
-  while(!mpu.begin(MPU6050_SCALE_2000DPS, MPU6050_RANGE_2G))
-  {
+  while(!mpu.begin(MPU6050_SCALE_2000DPS, MPU6050_RANGE_2G)) {
     Serial.println("Could not find a valid MPU6050 sensor, check wiring!");
     delay(500);
   }
@@ -42,8 +39,7 @@ void setup()
   mpu.setThreshold(3);
 }
 
-void loop()
-{
+void loop() {
   timer = millis();
 
   // Read normalized values
