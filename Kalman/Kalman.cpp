@@ -1,46 +1,96 @@
-#include <Wire.h> // Biblioteca para comunicação I2C
-#include <Adafruit_Sensor.h> // Biblioteca para sensores Adafruit
-#include <Adafruit_BME280.h> // Biblioteca para o sensor BME280
-#include <KalmanFilter.h> // Biblioteca para o filtro de Kalman
+/*
+ * Kalman Filter Overview:
+ * ------------------------
+ * The Kalman Filter is an algorithm used for estimating the state of a dynamic system.
+ * It combines noisy measurements with a prediction model to produce accurate and reliable estimates.
+ *
+ * Key Features:
+ * 1. State Estimation:
+ *    - Predicts and updates the system's state (e.g., position, velocity) over time.
+ * 
+ * 2. Noise Reduction:
+ *    - Filters out random noise from sensor measurements to provide a cleaner signal.
+ * 
+ * 3. Recursive Process:
+ *    - Continuously updates estimates in real-time as new sensor data becomes available.
+ *
+ * Workflow:
+ * ---------
+ * 1. Prediction Step:
+ *    - Predict the next state of the system using the mathematical model.
+ *    - Calculate the uncertainty of the prediction.
+ *
+ * 2. Update Step:
+ *    - Measure the actual state using sensors.
+ *    - Compare the predicted state with the measured value (residual).
+ *    - Adjust the prediction based on the Kalman Gain, a factor determining the weight given to each source.
+ *
+ * 3. Optimal Estimate:
+ *    - Combines the predicted state and the measured state into a more accurate estimate.
+ *
+ * Assumptions:
+ * - The system is linear.
+ * - The noise in the system and measurements is Gaussian (normally distributed).
+ *
+ * Applications:
+ * --------------
+ * 1. GPS and Navigation:
+ *    - Smooths GPS data to improve positional accuracy.
+ * 2. Robotics:
+ *    - Tracks the position and velocity of robots or drones in real-time.
+ * 3. Finance:
+ *    - Removes noise from stock price data to identify trends.
+ * 
+ * Extensions:
+ * - Extended Kalman Filter (EKF) and Unscented Kalman Filter (UKF):
+ *   - Designed for handling nonlinear systems where the standard Kalman Filter is insufficient.
+ */
 
-// Definição dos pinos SDA e SCL para a comunicação I2C
+
+#include <Wire.h> // Library for I2C communication
+#include <Adafruit_Sensor.h> // Library for Adafruit sensors
+#include <Adafruit_BME280.h> // Library for the BME280 sensor
+#include <KalmanFilter.h> // Library for the Kalman Filter
+
+// Define the SDA and SCL pins for I2C communication
 #define SDA_PIN 4
 #define SCL_PIN 5
 
-// Objeto do sensor BME280
+// BME280 sensor object
 Adafruit_BME280 bme;
 
-// Objeto do filtro de Kalman
+// Kalman Filter object
 KalmanFilter kalmanFilter;
 
 void setup() {
-  // Inicialização da comunicação serial
+  // Initialize serial communication
   Serial.begin(9600);
 
-  // Inicialização do sensor BME280
+  // Initialize the BME280 sensor
   if (!bme.begin(0x76)) {
-    Serial.println("Não foi possível encontrar o sensor BME280. Verifique a conexão!");
-    while (1);
+    Serial.println("Could not find BME280 sensor. Check the connection!");
+    while (1); // Halt the program if the sensor is not found
   }
 
-  // Inicialização do filtro de Kalman
-  kalmanFilter.init(0, 1, 0, 1, 0.01); // Substitua os parâmetros de inicialização de acordo com sua aplicação
+  // Initialize the Kalman Filter
+  // Replace the initialization parameters according to your application
+  kalmanFilter.init(0, 1, 0, 1, 0.01);
 }
 
 void loop() {
-  // Leitura do valor do sensor
-  float valorSensor = bme.readTemperature(); // Substitua por outra leitura de sensor, se necessário
+  // Read the value from the sensor
+  float sensorValue = bme.readTemperature(); // Replace with another sensor reading if necessary
 
-  // Aplica o filtro de Kalman no valor do sensor
-  float valorFiltrado = kalmanFilter.updateEstimate(valorSensor);
+  // Apply the Kalman Filter to the sensor value
+  float filteredValue = kalmanFilter.updateEstimate(sensorValue);
 
-  // Imprime os valores originais e filtrados no monitor serial
-  Serial.print("Valor original do sensor: ");
-  Serial.println(valorSensor);
-  Serial.print("Valor filtrado do sensor: ");
-  Serial.println(valorFiltrado);
+  // Print the original and filtered values to the serial monitor
+  Serial.print("Original sensor value: ");
+  Serial.println(sensorValue);
+  Serial.print("Filtered sensor value: ");
+  Serial.println(filteredValue);
   Serial.println("-----------------------------");
 
-  // Aguarda um curto intervalo de tempo entre as leituras
+  // Wait for a short interval between readings
   delay(1000);
 }
