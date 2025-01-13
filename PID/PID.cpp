@@ -1,77 +1,78 @@
-// Bibliotecas necessárias
-#include <Wire.h> // Biblioteca para comunicação I2C
-#include <Adafruit_Sensor.h> // Biblioteca para sensores Adafruit
-#include <Adafruit_BNO055.h> // Biblioteca para o sensor BNO055
+// Necessary libraries
+#include <Wire.h> // Library for I2C communication
+#include <Adafruit_Sensor.h> // Library for Adafruit sensors
+#include <Adafruit_BNO055.h> // Library for the BNO055 sensor
 
-// Pinos utilizados para a comunicação I2C
+// Pins used for I2C communication
 #define SDA_PIN 4
 #define SCL_PIN 5
 
-// Objeto do sensor BNO055
+// BNO055 sensor object
 Adafruit_BNO055 bno = Adafruit_BNO055(55);
 
-// Constantes do controlador PID
-double kp = 0.5; // Ganho proporcional
-double ki = 0.2; // Ganho integral
-double kd = 0.1; // Ganho derivativo
+// PID controller constants
+double kp = 0.5; // Proportional gain
+double ki = 0.2; // Integral gain
+double kd = 0.1; // Derivative gain
 
-// Variáveis do controlador PID
-double setpoint = 0; // Valor de referência
-double erro = 0; // Erro
-double integral = 0; // Integral acumulada
-double derivativo = 0; // Derivativo
-double last_time = 0; // Último tempo de leitura
+// PID controller variables
+double setpoint = 0; // Reference value
+double error = 0; // Current error
+double integral = 0; // Accumulated integral
+double derivative = 0; // Derivative
+double last_time = 0; // Last time reading
+double last_error = 0; // Previous error for derivative calculation
 
-// Função para calcular o controle PID
-double calcularPID(double erro, double integral, double derivativo) {
-  double output = kp * erro + ki * integral + kd * derivativo;
+// Function to calculate the PID control output
+double calculatePID(double error, double integral, double derivative) {
+  double output = kp * error + ki * integral + kd * derivative; // PID formula
   return output;
 }
 
 void setup() {
-  // Inicialização da comunicação serial
+  // Initialize serial communication
   Serial.begin(9600);
 
-  // Inicialização do sensor BNO055
+  // Initialize the BNO055 sensor
   if (!bno.begin()) {
-    Serial.println("Não foi possível encontrar o sensor BNO055. Verifique a conexão!");
-    while (1);
+    Serial.println("BNO055 sensor not detected. Check the connection!");
+    while (1); // Halt execution if the sensor is not found
   }
 
-  // Calibração do sensor BNO055
+  // Calibrate the BNO055 sensor
   delay(1000);
-  bno.setExtCrystalUse(true);
+  bno.setExtCrystalUse(true); // Use external crystal for better accuracy
 
-  // Inicialização do último tempo de leitura
+  // Initialize the last time reading
   last_time = millis();
 }
 
 void loop() {
-  // Cálculo do tempo decorrido desde a última leitura
+  // Calculate the elapsed time since the last reading
   double current_time = millis();
-  double delta_time = (current_time - last_time) / 1000.0; // Delta de tempo em segundos
+  double delta_time = (current_time - last_time) / 1000.0; // Time difference in seconds
   last_time = current_time;
 
-  // Leitura do valor do giroscópio
+  // Read gyroscope values
   sensors_event_t event;
   bno.getEvent(&event);
-  double valor_giroscopio_x = event.gyro.x; // Valor do giroscópio na direção x
+  double gyro_value_x = event.gyro.x; // Gyroscope value along the x-axis
 
-  // Cálculo do erro
-  erro = setpoint - valor_giroscopio_x;
+  // Calculate the current error
+  error = setpoint - gyro_value_x;
 
-  // Cálculo do termo integral
-  integral += erro * delta_time;
+  // Calculate the integral term
+  integral += error * delta_time;
 
-  // Cálculo do termo derivativo
-  derivativo = (erro - last_erro) / delta_time;
+  // Calculate the derivative term
+  derivative = (error - last_error) / delta_time;
 
-  // Cálculo do controle PID
-  double output = calcularPID(erro, integral, derivativo);
+  // Calculate the PID control output
+  double output = calculatePID(error, integral, derivative);
 
-  // Aplicação do controle PID no quadricóptero
-  // Substitua esta parte do código com as ações necessárias para o controle do quadricóptero com o valor de 'output' calculado pelo PID
+  // Apply the PID control to the quadcopter
+  // Replace this section with the necessary actions to control the quadcopter using the 'output' value calculated by the PID
 
-  // Atualização do valor do erro para a próxima iteração
-  last_erro = erro;
+  // Update the error for the next iteration
+  last_error = error;
 }
