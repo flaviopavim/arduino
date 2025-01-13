@@ -1,177 +1,164 @@
 #include <Servo.h>
 #include <Ultrasonic.h>
 
+// Define relay pins
 #define relay1 A3
 #define relay2 A2
 #define relay3 A1
 #define relay4 A0
 
-Servo servo; //estancia o servo
-Ultrasonic ultrasonic(12, 10); //inicializa o ultrasonic
+Servo servo; // Create servo object
+Ultrasonic ultrasonic(12, 10); // Initialize ultrasonic sensor
 
-void stop() {
-  digitalWrite(relay1,HIGH);
-  digitalWrite(relay2,HIGH);
-  digitalWrite(relay3,HIGH);
-  digitalWrite(relay4,HIGH);
+// Function to stop all movement
+void stopMovement() {
+  digitalWrite(relay1, HIGH);
+  digitalWrite(relay2, HIGH);
+  digitalWrite(relay3, HIGH);
+  digitalWrite(relay4, HIGH);
 }
 
 void setup() {
-  Serial.begin(9600); //inicializa o serial monitor
-  servo.attach(13); //inicializa o servo
+  Serial.begin(9600); // Initialize serial monitor
+  servo.attach(13); // Attach servo to pin 13
 
-  pinMode(relay1,OUTPUT);
-  pinMode(relay2,OUTPUT);
-  pinMode(relay3,OUTPUT);
-  pinMode(relay4,OUTPUT);
+  pinMode(relay1, OUTPUT);
+  pinMode(relay2, OUTPUT);
+  pinMode(relay3, OUTPUT);
+  pinMode(relay4, OUTPUT);
 
-  stop();
+  stopMovement();
 }
 
-void front() {
-  digitalWrite(relay1,HIGH);
-  digitalWrite(relay2,LOW);
-  digitalWrite(relay3,LOW);
-  digitalWrite(relay4,HIGH);
+// Function for forward movement
+void moveForward() {
+  digitalWrite(relay1, HIGH);
+  digitalWrite(relay2, LOW);
+  digitalWrite(relay3, LOW);
+  digitalWrite(relay4, HIGH);
 }
 
-void back() {
-  digitalWrite(relay1,LOW);
-  digitalWrite(relay2,HIGH);
-  digitalWrite(relay3,HIGH);
-  digitalWrite(relay4,LOW);
+// Function for backward movement
+void moveBackward() {
+  digitalWrite(relay1, LOW);
+  digitalWrite(relay2, HIGH);
+  digitalWrite(relay3, HIGH);
+  digitalWrite(relay4, LOW);
 }
 
-void left() {
-  digitalWrite(relay1,HIGH);
-  digitalWrite(relay2,LOW);
-  digitalWrite(relay3,HIGH);
-  digitalWrite(relay4,LOW);
+// Function for left turn
+void turnLeft() {
+  digitalWrite(relay1, HIGH);
+  digitalWrite(relay2, LOW);
+  digitalWrite(relay3, HIGH);
+  digitalWrite(relay4, LOW);
 }
 
-void right() {
-  digitalWrite(relay1,LOW);
-  digitalWrite(relay2,HIGH);
-  digitalWrite(relay3,LOW);
-  digitalWrite(relay4,HIGH);
+// Function for right turn
+void turnRight() {
+  digitalWrite(relay1, LOW);
+  digitalWrite(relay2, HIGH);
+  digitalWrite(relay3, LOW);
+  digitalWrite(relay4, HIGH);
 }
 
-bool boolAngle=false; //pra controle do sentido de giro do servo
-int angle=90; //ângulo atual
+bool reverseAngle = false; // Boolean to control servo sweep direction
+int angle = 90; // Current servo angle
 
-int object_left=0;
-int object_leftFront=0;
-int object_front=0;
-int object_rightFront=0;
-int object_right=0;
+int objectLeft = 0;
+int objectLeftFront = 0;
+int objectFront = 0;
+int objectRightFront = 0;
+int objectRight = 0;
 
-//função pra girar o servo pra esquerda e direita, com base nos angulos from e to
-void radarSweep(int from,int to) {
-
-  if (boolAngle) {
-    //aumenta o ângulo
-    angle++;
+// Function to perform servo sweep and measure distances
+void radarSweep(int from, int to) {
+  if (reverseAngle) {
+    angle++; // Increase angle
   } else {
-    //diminui o ângulo
-    angle--;
+    angle--; // Decrease angle
   }
   
-  //atingiu o destino
-  if (angle>=to) {
-    //muda o sentido do servo
-    boolAngle=false;
+  // Reverse direction when reaching bounds
+  if (angle >= to) {
+    reverseAngle = false;
+  }
+  if (angle <= from) {
+    reverseAngle = true;
   }
 
-  //atingiu o destino
-  if (angle<=from) {
-    //muda o sentido do servo
-    boolAngle=true;
-  }
-
-  //gira o servo pra posição do ângulo
+  // Move servo to the current angle
   servo.write(angle);
 
-  //em alguns ângulos, ele faz a leitura de distância
-  if (angle==0 || angle==45 || angle==90 || angle==135 || angle==180) {
+  // Perform distance reading at specific angles
+  if (angle == 0 || angle == 45 || angle == 90 || angle == 135 || angle == 180) {
+    int distance = ultrasonic.read(); // Read distance from ultrasonic sensor
+    String position = "";
 
-    //lê a distância
-    int distance = ultrasonic.read();
-
-    String text="";
-
-    if (angle==0) {
-      text="Right";
-      object_right=distance;
+    if (angle == 0) {
+      position = "Right";
+      objectRight = distance;
     }
-    if (angle==45) {
-      text="Right Front";
-      object_rightFront=distance;
+    if (angle == 45) {
+      position = "Right Front";
+      objectRightFront = distance;
     }
-    if (angle==90) {
-      text="Front";
-      object_front=distance;
+    if (angle == 90) {
+      position = "Front";
+      objectFront = distance;
     }
-    if (angle==135) {
-      text="Left Front";
-      object_leftFront=distance;
+    if (angle == 135) {
+      position = "Left Front";
+      objectLeftFront = distance;
     }
-    if (angle==180) {
-      text="Left";
-      object_left=distance;
+    if (angle == 180) {
+      position = "Left";
+      objectLeft = distance;
     }
 
-    
-    Serial.println("Distance in "+text+" "+String(distance));
-
+    Serial.println("Distance at " + position + ": " + String(distance));
   }
 }
 
-int intervalRadar=0; //contagem inicial
-int countRadar=10; //controle de milissegundos do movimento do radar
+int radarInterval = 0; // Initial counter
+int radarDelay = 10; // Delay in milliseconds for radar movement
 
-void loopRadar() {
-  if (intervalRadar==countRadar) {
-      intervalRadar=0;
-      radarSweep(0,180); //leitura geral
-      //radarSweep(45,135); //leitura pra frente numa curva pequena
-      //radarSweep(90,90); //leitura em frente
-    }
-    intervalRadar++;
+// Function to control radar sweeping logic
+void radarLoop() {
+  if (radarInterval == radarDelay) {
+    radarInterval = 0;
+    radarSweep(0, 180); // Full sweep
+    // radarSweep(45, 135); // Narrow front sweep
+    // radarSweep(90, 90); // Single forward reading
+  }
+  radarInterval++;
 }
 
 unsigned long previousMillis = 0;
-const long interval = 1;
+const long loopInterval = 1; // Main loop interval in milliseconds
 
 void loop() {
   unsigned long currentMillis = millis();
-  if (currentMillis - previousMillis >= interval) {
+  if (currentMillis - previousMillis >= loopInterval) {
     previousMillis = currentMillis;
-    loopRadar();
+    radarLoop();
 
-    if (object_front<15 || object_leftFront<15 || object_rightFront<15) {
+    if (objectFront < 15 || objectLeftFront < 15 || objectRightFront < 15) {
+      stopMovement();
 
-      stop();
-
-      if (object_left<object_right) {
-        if (object_left<15) {
-          left();
-          //delay(100);
+      if (objectLeft < objectRight) {
+        if (objectLeft < 15) {
+          turnLeft();
         }
       } else {
-        if (object_right<15) {
-          right();
-          //delay(100);
+        if (objectRight < 15) {
+          turnRight();
         }
       }
-
     } else {
-
-      if (object_front>15) {
-        front();
+      if (objectFront > 15) {
+        moveForward();
       }
-
-
     }
-
   }
 }
