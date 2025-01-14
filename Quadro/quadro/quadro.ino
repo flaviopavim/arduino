@@ -97,7 +97,10 @@ void drawClock() {
 
 //unsigned long previousMillis = 0;
 //const long interval = 1000;
-
+int x=0;
+int y=0;
+bool bool_x=true;
+bool bool_y=true;
 void loop() {
 
   //loopClock();
@@ -111,11 +114,37 @@ void loop() {
       //draw(); 
   //}
 
-  for (int i = 0; i < 50; i++) {
-        pixel(random(1, 33), random(1, 33), randColor());
-    }
+  //for (int i = 0; i < 50; i++) {
+  //      pixel(random(1, 33), random(1, 33), randColor());
+  //  }
+  all("#000000");
 
+  if (x>=33) {
+    bool_x=false;
+  } else if (x<=0) {
+    bool_x=true;
+  }
+
+  if (y>=33) {
+    bool_y=false;
+  } else if (y<=0) {
+    bool_y=true;
+  }
+
+  if (bool_x) {
+    x++;
+  } else {
+    x--;
+  }
+
+  if (bool_y) {
+    y++;
+  } else {
+    y--;
+  }
+  
+  pixel(x,y, randColor());
   //fall();
   FastLED.show();
-  
+  delay(10);
 }
