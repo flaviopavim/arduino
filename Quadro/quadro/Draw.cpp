@@ -138,43 +138,43 @@ void draw() {
 }
 
 // Função para retornar o objeto correto baseado no dígito e desenhá-lo
-void drawNumber(int digit, int x) {
+void drawNumber(int digit, int x, int y) {
   switch (digit) {
     case 0:
-      addNumberToMatrix(obj_zero, x + 1, 0 + 1);  // Adiciona o número 0
+      addNumberToMatrix(obj_zero, x, y);  // Adiciona o número 0
       break;
     case 1:
-      addNumberToMatrix(obj_one, x + 1, 0 + 1);  // Adiciona o número 1
+      addNumberToMatrix(obj_one, x, y);  // Adiciona o número 1
       break;
     case 2:
-      addNumberToMatrix(obj_two, x + 1, 0 + 1);  // Adiciona o número 2
+      addNumberToMatrix(obj_two, x, y);  // Adiciona o número 2
       break;
     case 3:
-      addNumberToMatrix(obj_three, x + 1, 0 + 1);  // Adiciona o número 3
+      addNumberToMatrix(obj_three, x, y);  // Adiciona o número 3
       break;
     case 4:
-      addNumberToMatrix(obj_four, x + 1, 0 + 1);  // Adiciona o número 4
+      addNumberToMatrix(obj_four, x, y);  // Adiciona o número 4
       break;
     case 5:
-      addNumberToMatrix(obj_five, x + 1, 0 + 1);  // Adiciona o número 5
+      addNumberToMatrix(obj_five, x, y);  // Adiciona o número 5
       break;
     case 6:
-      addNumberToMatrix(obj_six, x + 1, 0 + 1);  // Adiciona o número 6
+      addNumberToMatrix(obj_six, x, y);  // Adiciona o número 6
       break;
     case 7:
-      addNumberToMatrix(obj_seven, x + 1, 0 + 1);  // Adiciona o número 7
+      addNumberToMatrix(obj_seven, x, y);  // Adiciona o número 7
       break;
     case 8:
-      addNumberToMatrix(obj_eight, x + 1, 0 + 1);  // Adiciona o número 8
+      addNumberToMatrix(obj_eight, x, y);  // Adiciona o número 8
       break;
     case 9:
-      addNumberToMatrix(obj_nine, x + 1, 0 + 1);  // Adiciona o número 9
+      addNumberToMatrix(obj_nine, x, y);  // Adiciona o número 9
       break;
     case 10:
-      addNumberToMatrix(obj_dots, x + 1, 0 + 1);  // Adiciona os pontos
+      addNumberToMatrix(obj_dots, x, y);  // Adiciona os pontos
       break;
     default:
-      addNumberToMatrix(obj_zero, x + 1, 0 + 1);  // Adiciona o número 0 por padrão
+      addNumberToMatrix(obj_zero, x, y);  // Adiciona o número 0 por padrão
       break;
   }
 }

@@ -10,7 +10,7 @@ void setupMatrix();  // Função para preencher a matriz com os números
 void draw();         // Função para desenhar a matriz na tela
 
 // Função para desenhar os números
-void drawNumber(int digit, int x);
+void drawNumber(int digit, int x, int y);
 
 extern String actualColor;  // Cor atual
 
