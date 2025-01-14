@@ -41,10 +41,10 @@ $priceVariation = $previousBitcoinPrice > 0
 // Create the final array
 $data = [
     'datetime' => $currentDateTime,
-    'bitcoin_price_brl' => number_format($bitcoinPriceBRL, 2, '.', ','),
-    'bitcoin_price_usd' => number_format($bitcoinPriceUSD, 2, '.', ','),
-    'usd_to_brl' => number_format($usdToBRL, 2, '.', ','),
-    'price_variation_percent' => number_format($priceVariation, 2, '.', ',')
+    'bitcoin_price_brl' => number_format($bitcoinPriceBRL, 2, '.', ''),
+    'bitcoin_price_usd' => number_format($bitcoinPriceUSD, 2, '.', ''),
+    'usd_to_brl' => number_format($usdToBRL, 2, '.', ''),
+    'price_variation_percent' => number_format($priceVariation, 2, '.', '')
 ];
 
 // Output the array as JSON
