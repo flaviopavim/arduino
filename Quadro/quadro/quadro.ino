@@ -97,10 +97,33 @@ void drawClock() {
 
 //unsigned long previousMillis = 0;
 //const long interval = 1000;
-int x=0;
-int y=0;
+
+int x=1;
+int y=1;
 bool bool_x=true;
 bool bool_y=true;
+
+void pingPong() {
+
+  all("#000000"); // Limpa a tela
+
+ // Verificar limites e inverter direção
+  if (x <= 1 || x >= 32) bool_x = !bool_x;
+  if (y <= 1 || y >= 32) bool_y = !bool_y;
+
+  // Atualizar posição com base na direção
+  x += bool_x ? 1 : -1;
+  y += bool_y ? 2 : -1;
+
+  x = constrain(x, 1, 32);
+  y = constrain(y, 1, 32);
+
+  // Desenhar o pixel na nova posição com uma cor aleatória
+  pixel(x, y, randColor());
+
+}
+
+
 void loop() {
 
   //loopClock();
@@ -117,34 +140,9 @@ void loop() {
   //for (int i = 0; i < 50; i++) {
   //      pixel(random(1, 33), random(1, 33), randColor());
   //  }
-  all("#000000");
-
-  if (x>=33) {
-    bool_x=false;
-  } else if (x<=0) {
-    bool_x=true;
-  }
-
-  if (y>=33) {
-    bool_y=false;
-  } else if (y<=0) {
-    bool_y=true;
-  }
-
-  if (bool_x) {
-    x++;
-  } else {
-    x--;
-  }
-
-  if (bool_y) {
-    y++;
-  } else {
-    y--;
-  }
   
-  pixel(x,y, randColor());
   //fall();
+  pingPong();
   FastLED.show();
-  delay(10);
+  delay(1);
 }
