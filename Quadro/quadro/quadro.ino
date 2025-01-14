@@ -1,6 +1,5 @@
-#include "esp.h"
-#include "api.h"
-#include "led.h"
+#include "esp.cpp"
+#include "led.cpp"
 
 void setup() {
     Serial.begin(9600);
@@ -9,7 +8,7 @@ void setup() {
 
 void loop() {
     // Código principal
-    fall();       // Animação
+    fall(); // Animação
     FastLED.show();
     delay(100);
 }

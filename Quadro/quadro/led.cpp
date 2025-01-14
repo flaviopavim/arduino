@@ -1,56 +1,55 @@
-#include "led.h"
+#include <FastLED.h>
 
-// Dimensões da matriz LED
+// Configuração da matriz de LEDs
 const uint8_t kMatrixWidth = 32;
 const uint8_t kMatrixHeight = 32;
 #define NUM_LEDS (kMatrixWidth * kMatrixHeight)
 CRGB leds[NUM_LEDS];
 
-uint16_t noise[kMatrixWidth][kMatrixHeight];
-int falled[kMatrixWidth][kMatrixHeight] = {0};
-int fallX = 0;
-int fallY = 0;
-int points = 0;
-
+// Funções auxiliares de controle dos LEDs
 void pixel(int x, int y, String color) {
-    int i = (x - 1) + (y - 1) * kMatrixWidth;
+    int x_ = 33 - x;
+    int y_ = y;
+
+    if (y_ > 24) x_ += 96 - 3;
+    else if (y_ > 16) x_ += 64 - 2;
+    else if (y_ > 8) x_ += 32 - 1;
+
+    int i = (x_ * 8) - 7 + (y_ - 1);
+    int i_ = i - 1;
+
+    for (int k = 1; k < 32 * 4; k++) {
+        if (i > 8 * ((k * 2) - 1) && i <= 8 * (((k * 2) - 1) + 1)) {
+            i_ = (8 * (((k * 2) - 1) + 1)) - i + (8 * (((k * 2) - 1) + 1)) - 8;
+            break;
+        }
+    }
+
     long number = strtol(&color[1], NULL, 16);
-    leds[i].red = (number >> 8) & 0xFF;
-    leds[i].green = number >> 16;
-    leds[i].blue = number & 0xFF;
+    leds[i_].red = (number >> 8) & 0xFF;
+    leds[i_].green = number >> 16;
+    leds[i_].blue = number & 0xFF;
 }
 
 void all(String color) {
-    for (int i = 0; i < NUM_LEDS; i++) {
-        long number = strtol(&color[1], NULL, 16);
-        leds[i].red = (number >> 8) & 0xFF;
-        leds[i].green = number >> 16;
-        leds[i].blue = number & 0xFF;
-    }
-}
-
-void randPixels() {
-    for (int i = 0; i < 50; i++) {
-        pixel(random(1, kMatrixWidth + 1), random(1, kMatrixHeight + 1), randColor());
+    for (int x = 1; x <= 32; x++) {
+        for (int y = 1; y <= 32; y++) {
+            pixel(x, y, color);
+        }
     }
 }
 
 String randColor() {
-    String letters = "ABCDEF0123456789";
-    String randString = "#";
-    for (int i = 0; i < 6; i++) {
-        randString += letters[random(16)];
+    String letters[16] = {"a", "b", "c", "d", "e", "f", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0"};
+    String randString = "";
+    for (int i = 1; i <= 6; i++) {
+        randString += letters[random(0, 15)];
     }
-    return randString;
+    return "#" + randString;
 }
 
-void fall() {
-    // Implementação do efeito de queda
-    if (fallX == 0) {
-        fallX = random(1, kMatrixWidth + 1);
-        points++;
+void randPixels() {
+    for (int i = 0; i < 50; i++) {
+        pixel(random(1, 33), random(1, 33), randColor());
     }
-
-    if (fallY == kMatrixHeight || falled[fallX - 1][fallY - 1] == 1) {
-        falled[fallX - 1][fallY - 
-
+}
