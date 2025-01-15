@@ -143,7 +143,9 @@ void drawMatrix() {
 void loop() {
 
   all("#000000");
-  explode();
+  for (int i = 0; i < 5; i++) {
+    explode(i);
+  }
   FastLED.show();
 
   //unsigned long currentMillis = millis();
