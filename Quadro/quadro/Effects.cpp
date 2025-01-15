@@ -6,9 +6,26 @@ int yy=1;
 bool bool_xx=true;
 bool bool_yy=true;
 
-void pingPong() {
-
+void drawCircle(int centerX, int centerY, int radius) {
   all("#000000"); // Limpa a tela
+
+  // Desenha o círculo
+  for (int y = 0; y < 32; y++) {
+    for (int x = 0; x < 32; x++) {
+      // Calcula a distância do pixel até o centro
+      int dx = x - centerX;
+      int dy = y - centerY;
+      int distanceSquared = dx * dx + dy * dy;
+
+      // Se estiver dentro do raio do círculo, desenha o pixel
+      if (distanceSquared <= radius * radius) {
+        pixel(x, y, "#ffffff");
+      }
+    }
+  }
+}
+
+void pingPong() {
 
  // Verificar limites e inverter direção
   if (xx <= 1 || xx >= 32) bool_xx = !bool_xx;
@@ -35,7 +52,6 @@ int yy1=0;
 int yy2=0;
 
 void explode() {
-  all("#000000"); // Limpa a tela
 
   // Se ainda não atingiu o ponto de explosão, anima o pixel "subindo"
   if (yy < 20) {
