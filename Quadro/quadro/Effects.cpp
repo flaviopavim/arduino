@@ -63,11 +63,11 @@ struct Explosion {
   int explosionLimit;
 };
 
-Explosion explosions[5]; // Vetor para armazenar várias explosões
+Explosion explosions[50]; // Vetor para armazenar várias explosões
 
 void setupExplosions() {
   // Inicializa as explosões com valores aleatórios
-  for (int i = 0; i < 5; i++) {
+  for (int i = 0; i < 50; i++) {
     explosions[i].xx = random(1, 32);
     explosions[i].yy = 1;
     explosions[i].count_explosion = 0;
@@ -75,9 +75,34 @@ void setupExplosions() {
     explosions[i].xx2 = 0;
     explosions[i].yy1 = 0;
     explosions[i].yy2 = 0;
-    explosions[i].ylimit = random(15, 25);
-    explosions[i].explosionLimit = random(15, 20);
+    explosions[i].ylimit = random(1, 32);
+    explosions[i].explosionLimit = 32;
   }
+}
+
+// Definir algumas cores fixas (exemplo)
+int fixedColors[] = {0xFF0000, 0x00FF00, 0x0000FF}; // Vermelho, Verde, Azul
+
+// Função para obter a cor (fixa ou aleatória)
+// Função para obter a cor (fixa ou aleatória)
+String getExplosionColor(int index) {
+  // Se for uma explosão com cor fixa, escolhe uma das cores fixas
+  if (index % 2 == 0) { // Exemplo: explosões de índices pares terão cor fixa
+    if (index % 6 == 0) {
+      return "#ff0000"; // Vermelho
+    } else if (index % 6 == 1) {
+      return "#00ff00"; // Verde
+    } else if (index % 6 == 2) {
+      return "#0000ff"; // Azul
+    } else if (index % 6 == 3) {
+      return "#ffff00"; // Amarelo
+    } else if (index % 6 == 4) {
+      return "#ff00ff"; // Magenta
+    } else {
+      return "#00ffff"; // Ciano
+    }
+  }
+  return randColor(); // Caso contrário, usa uma cor aleatória
 }
 
 void explode(int index) {
@@ -86,7 +111,7 @@ void explode(int index) {
   // Se ainda não atingiu o ponto de explosão, anima o pixel "subindo"
   if (explosion.yy < explosion.ylimit) {
     explosion.yy++;
-    pixel(explosion.xx, explosion.yy, randColor());
+    pixel(explosion.xx, explosion.yy, getExplosionColor(index));  // Usa a cor retornada
   } else {
     // Escala menor para abertura em "X"
     int scaled_explosion = explosion.count_explosion / 1.2;
@@ -98,10 +123,10 @@ void explode(int index) {
     explosion.yy2 = int(floor(explosion.yy - scaled_explosion));
 
     // Abertura em "X"
-    pixel(explosion.xx1, explosion.yy1, randColor());
-    pixel(explosion.xx2, explosion.yy1, randColor());
-    pixel(explosion.xx1, explosion.yy2, randColor());
-    pixel(explosion.xx2, explosion.yy2, randColor());
+    pixel(explosion.xx1, explosion.yy1, getExplosionColor(index));
+    pixel(explosion.xx2, explosion.yy1, getExplosionColor(index));
+    pixel(explosion.xx1, explosion.yy2, getExplosionColor(index));
+    pixel(explosion.xx2, explosion.yy2, getExplosionColor(index));
 
     // Coordenadas para a abertura em cruz (maior alcance)
     explosion.xx1 = explosion.xx + explosion.count_explosion;
@@ -110,10 +135,10 @@ void explode(int index) {
     explosion.yy2 = explosion.yy - explosion.count_explosion;
 
     // Abertura em cruz
-    pixel(explosion.xx1, explosion.yy, randColor());
-    pixel(explosion.xx2, explosion.yy, randColor());
-    pixel(explosion.xx, explosion.yy1, randColor());
-    pixel(explosion.xx, explosion.yy2, randColor());
+    pixel(explosion.xx1, explosion.yy, getExplosionColor(index));
+    pixel(explosion.xx2, explosion.yy, getExplosionColor(index));
+    pixel(explosion.xx, explosion.yy1, getExplosionColor(index));
+    pixel(explosion.xx, explosion.yy2, getExplosionColor(index));
 
     // Incrementa a contagem da explosão
     explosion.count_explosion++;
@@ -126,92 +151,8 @@ void explode(int index) {
       explosion.yy2 = 0;
       explosion.xx = random(1, 32);
       explosion.yy = 1;
-      explosion.ylimit = random(15, 25);
-      explosion.explosionLimit = random(15, 20);
-    }
-  }
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-int count_explosion=0;
-
-int xx1=0;
-int xx2=0;
-
-int yy1=0;
-int yy2=0;
-
-int ylimit=random(15,25);
-int explosionLimit=random(15,20);
-
-
-void explsode() {
-
-  // Se ainda não atingiu o ponto de explosão, anima o pixel "subindo"
-  if (yy < ylimit) {
-    yy++;
-    pixel(xx, yy, randColor());
-  } else {
-    //pixel(xx, yy, randColor());
-
-    // Escala menor para abertura em "X"
-    int scaled_explosion = count_explosion / 1.2;
-
-    // Coordenadas para a abertura em "X"
-    xx1 = int(floor(xx + scaled_explosion));
-    xx2 = int(floor(xx - scaled_explosion));
-
-    yy1 = int(floor(yy + scaled_explosion));
-    yy2 = int(floor(yy - scaled_explosion));
-
-    // Abertura em "X"
-    pixel(xx1, yy1, randColor());
-    pixel(xx2, yy1, randColor());
-    pixel(xx1, yy2, randColor());
-    pixel(xx2, yy2, randColor());
-
-    // Coordenadas para a abertura em cruz (maior alcance)
-    xx1 = xx + count_explosion;
-    xx2 = xx - count_explosion;
-
-    yy1 = yy + count_explosion;
-    yy2 = yy - count_explosion;
-
-    // Abertura em cruz
-    pixel(xx1, yy, randColor());
-    pixel(xx2, yy, randColor());
-    pixel(xx, yy1, randColor());
-    pixel(xx, yy2, randColor());
-
-    // Incrementa a contagem da explosão
-    count_explosion++;
-    if (count_explosion > explosionLimit) {
-      // Reinicia após a explosão
-      count_explosion = 0;
-      xx1 = 0;
-      xx2 = 0;
-      yy1 = 0;
-      yy2 = 0;
-      xx = random(1, 32);
-      yy = 1;
-      ylimit=random(15,25);
-      explosionLimit=random(15,20);
+      explosion.ylimit = random(1, 32);
+      explosion.explosionLimit = 32;
     }
   }
 }

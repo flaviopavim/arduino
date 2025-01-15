@@ -16,7 +16,7 @@ String actualColor = "#ffffff";
 void setup() {
     Serial.begin(115200);
     FastLED.addLeds<WS2811, 2, RGB>(leds, NUM_LEDS);
-    FastLED.setBrightness(100);
+    FastLED.setBrightness(10);
     //resetFalled();
     setTime();
 }
@@ -143,7 +143,7 @@ void drawMatrix() {
 void loop() {
 
   all("#000000");
-  for (int i = 0; i < 5; i++) {
+  for (int i = 0; i < 50; i++) {
     explode(i);
   }
   FastLED.show();
