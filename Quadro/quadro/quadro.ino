@@ -10,12 +10,13 @@ String actualColor = "#ffffff";
 #include "LEDMatrix.h"
 //#include "Draw.h"
 //#include "MyClock.h"
+#include "Effects.h"
 
 // Arduino setup function
 void setup() {
     Serial.begin(115200);
     FastLED.addLeds<WS2811, 2, RGB>(leds, NUM_LEDS);
-    FastLED.setBrightness(10);
+    FastLED.setBrightness(100);
     //resetFalled();
     //setTime();
 }
@@ -98,34 +99,8 @@ void drawClock() {
 //unsigned long previousMillis = 0;
 //const long interval = 1000;
 
-int x=1;
-int y=1;
-bool bool_x=true;
-bool bool_y=true;
-
-void pingPong() {
-
-  all("#000000"); // Limpa a tela
-
- // Verificar limites e inverter direção
-  if (x <= 1 || x >= 32) bool_x = !bool_x;
-  if (y <= 1 || y >= 32) bool_y = !bool_y;
-
-  // Atualizar posição com base na direção
-  x += bool_x ? 1 : -1;
-  y += bool_y ? 2 : -1;
-
-  x = constrain(x, 1, 32);
-  y = constrain(y, 1, 32);
-
-  // Desenhar o pixel na nova posição com uma cor aleatória
-  pixel(x, y, randColor());
-
-}
-
-
 void loop() {
-
+  all("#000000");
   //loopClock();
 
   //unsigned long currentMillis = millis();
@@ -142,7 +117,8 @@ void loop() {
   //  }
   
   //fall();
-  pingPong();
+  //pingPong();
+  explode();
   FastLED.show();
-  delay(1);
+  delay(10);
 }

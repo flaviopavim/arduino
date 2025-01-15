@@ -4,35 +4,39 @@ CRGB leds[NUM_LEDS];
 
 // Função para desenhar um pixel na matriz com uma cor específica
 void pixel(int x, int y, String color) {
-    int x_ = 33 - x;
-    int y_ = y;
 
-    // Ajuste da posição para seções específicas da matriz
-    if (y_ > 24) {
-        x_ = (96 - 3) + x_;
-    } else if (y_ > 16) {
-        x_ = (64 - 2) + x_;
-    } else if (y_ > 8) {
-        x_ = (32 - 1) + x_;
-    }
+    if (x>=1 && x<=32 && y>=1 && y<=32) {
 
-    // Calcula o índice do LED
-    int i = (x_ * 8) - 7 + (y_ - 1);
-    int i_ = i - 1;
+      int x_ = 33 - x;
+      int y_ = y;
 
-    // Inverte o pixel dentro do seu grupo para espelhamento
-    for (int k = 1; k < 32 * 4; k++) {
-        if (i > 8 * ((k * 2) - 1) && i <= 8 * (((k * 2) - 1) + 1)) {
-            i_ = (8 * (((k * 2) - 1) + 1)) - i + (8 * (((k * 2) - 1) + 1)) - 8;
-            break;
-        }
-    }
+      // Ajuste da posição para seções específicas da matriz
+      if (y_ > 24) {
+          x_ = (96 - 3) + x_;
+      } else if (y_ > 16) {
+          x_ = (64 - 2) + x_;
+      } else if (y_ > 8) {
+          x_ = (32 - 1) + x_;
+      }
 
-    // Converte a cor hexadecimal para RGB
-    long number = strtol(&color[1], NULL, 16);
-    leds[i_].red = (number >> 8) & 0xFF;
-    leds[i_].green = number >> 16;
-    leds[i_].blue = number & 0xFF;
+      // Calcula o índice do LED
+      int i = (x_ * 8) - 7 + (y_ - 1);
+      int i_ = i - 1;
+
+      // Inverte o pixel dentro do seu grupo para espelhamento
+      for (int k = 1; k < 32 * 4; k++) {
+          if (i > 8 * ((k * 2) - 1) && i <= 8 * (((k * 2) - 1) + 1)) {
+              i_ = (8 * (((k * 2) - 1) + 1)) - i + (8 * (((k * 2) - 1) + 1)) - 8;
+              break;
+          }
+      }
+
+      // Converte a cor hexadecimal para RGB
+      long number = strtol(&color[1], NULL, 16);
+      leds[i_].red = (number >> 8) & 0xFF;
+      leds[i_].green = number >> 16;
+      leds[i_].blue = number & 0xFF;
+  }
 }
 
 // Função para definir toda a matriz com uma cor específica
