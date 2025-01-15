@@ -143,9 +143,10 @@ void drawMatrix() {
 void loop() {
 
   all("#000000");
-  for (int i = 0; i < 50; i++) {
+  for (int i = 0; i < 5; i++) {
     explode(i);
   }
+  FastLED.setBrightness(20);
   FastLED.show();
 
   //unsigned long currentMillis = millis();
@@ -166,7 +167,8 @@ void loopd() {
       loopClock();
       all("#000000");
       drawClock();
-      draw(); 
+      draw();
+      FastLED.setBrightness(20);
       FastLED.show();
   }
 
