@@ -16,7 +16,7 @@ String actualColor = "#ffffff";
 void setup() {
     Serial.begin(115200);
     FastLED.addLeds<WS2811, 2, RGB>(leds, NUM_LEDS);
-    FastLED.setBrightness(10);
+    FastLED.setBrightness(20);
     //resetFalled();
     setTime();
 }
