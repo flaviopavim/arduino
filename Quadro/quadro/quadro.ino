@@ -24,6 +24,9 @@ void setup() {
 
 
 
+int x = 0;
+int y = 0;
+
 void drawClock() {
 
     if (bool_get_hour) {
@@ -47,17 +50,14 @@ void drawClock() {
       Serial.print(second1);
       Serial.print(second2);
 
-      int x = 0;
-      int y = 0;
-
       drawNumber(hour1,0+x,y);
       drawNumber(hour2,4+x,y);
       drawNumber(10,8+x,y);
       drawNumber(minute1,12+x,y);
       drawNumber(minute2,16+x,y);
-      drawNumber(10,20+x,y);
-      drawNumber(second1,24+x,y);
-      drawNumber(second2,28+x,y);
+      //drawNumber(10,20+x,y);
+      //drawNumber(second1,24+x,y);
+      //drawNumber(second2,28+x,y);
 
     }
 
