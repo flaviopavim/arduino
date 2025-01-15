@@ -17,7 +17,7 @@ void setup() {
     Serial.begin(115200);
     FastLED.addLeds<WS2811, 2, RGB>(leds, NUM_LEDS);
     FastLED.setBrightness(20);
-    //resetFalled();
+    resetFalled();
     setTime();
 }
 
@@ -55,15 +55,15 @@ void drawClock() {
       drawNumber(10,8+x,y);
       drawNumber(minute1,12+x,y);
       drawNumber(minute2,16+x,y);
-      //drawNumber(10,20+x,y);
-      //drawNumber(second1,24+x,y);
-      //drawNumber(second2,28+x,y);
+      drawNumber(10,20+x,y);
+      drawNumber(second1,24+x,y);
+      drawNumber(second2,28+x,y);
 
     }
 
-    //if (seconds==0) {
-      //resetFalled();
-    //}
+    if (minutes % 5==0) {
+      resetFalled();
+    }
 
     actualColor=randColor(); //muda a cor a cada 1 segundo
 }
@@ -143,9 +143,28 @@ void drawMatrix() {
 void loop() {
 
   all("#000000");
-  for (int i = 0; i < 5; i++) {
+  for (int i = 0; i < 8; i++) {
     explode(i);
   }
+
+  unsigned long currentMillis = millis();
+  if (previousMillis == 0 || currentMillis - previousMillis >= interval) {
+      previousMillis = currentMillis;
+      // a cada 1 segundo
+      
+  }
+
+  loopClock();
+  drawClock();
+  draw();
+
+  for (int i = 0; i < 5; i++) {
+    pixel(random(1, 32), random(1, 32), randColor());
+  }
+  
+  fall();
+  //pingPong();
+
   FastLED.setBrightness(20);
   FastLED.show();
 
@@ -154,30 +173,5 @@ void loop() {
   //    previousMillis = currentMillis;
   //    all("#000000");
   //    drawMatrix();
-  //    FastLED.show();
   //}
-}
-
-void loopd() {
-
-  unsigned long currentMillis = millis();
-  if (previousMillis == 0 || currentMillis - previousMillis >= interval) {
-      previousMillis = currentMillis;
-      // a cada 1 segundo
-      loopClock();
-      all("#000000");
-      drawClock();
-      draw();
-      FastLED.setBrightness(20);
-      FastLED.show();
-  }
-
-  //for (int i = 0; i < 50; i++) {
-  //      pixel(random(1, 33), random(1, 33), randColor());
-  //  }
-  
-  //fall();
-  //pingPong();
-  
-  
 }
