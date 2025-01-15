@@ -24,8 +24,8 @@ void setup() {
 
 
 
-int x = 0;
-int y = 0;
+int x = 5;
+int y = 2;
 
 void drawClock() {
 
@@ -55,9 +55,9 @@ void drawClock() {
       drawNumber(10,8+x,y);
       drawNumber(minute1,12+x,y);
       drawNumber(minute2,16+x,y);
-      drawNumber(10,20+x,y);
-      drawNumber(second1,24+x,y);
-      drawNumber(second2,28+x,y);
+      //drawNumber(10,20+x,y);
+      //drawNumber(second1,24+x,y);
+      //drawNumber(second2,28+x,y);
 
     }
 
@@ -139,6 +139,7 @@ void drawMatrix() {
   }
 }
 
+bool bool_y=true;
 
 void loop() {
 
@@ -152,18 +153,32 @@ void loop() {
       previousMillis = currentMillis;
       // a cada 1 segundo
       
+      if (x==0) {
+        //x=1;
+      } else {
+        //x=0;
+      }
+
+      //y++;
+      if (y>32-5) {
+        //y=32-5;
+      }
+
+
   }
 
-  loopClock();
-  drawClock();
-  draw();
+  
 
   for (int i = 0; i < 5; i++) {
     pixel(random(1, 32), random(1, 32), randColor());
   }
   
-  fall();
+  //fall();
   //pingPong();
+
+  loopClock();
+  drawClock();
+  draw();
 
   FastLED.setBrightness(20);
   FastLED.show();
