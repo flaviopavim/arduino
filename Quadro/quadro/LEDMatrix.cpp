@@ -1,45 +1,44 @@
 #include "LEDMatrix.h"
 
+// Array to store the LED matrix
 CRGB leds[NUM_LEDS];
 
-// Função para desenhar um pixel na matriz com uma cor específica
+// Function to draw a pixel on the matrix with a specific color
 void pixel(int x, int y, String color) {
+    if (x >= 1 && x <= 32 && y >= 1 && y <= 32) {
+        int x_ = 33 - x; // Adjust X for matrix orientation
+        int y_ = y;      // Y remains the same
 
-    if (x>=1 && x<=32 && y>=1 && y<=32) {
+        // Adjust position for specific matrix sections
+        if (y_ > 24) {
+            x_ = (96 - 3) + x_;
+        } else if (y_ > 16) {
+            x_ = (64 - 2) + x_;
+        } else if (y_ > 8) {
+            x_ = (32 - 1) + x_;
+        }
 
-      int x_ = 33 - x;
-      int y_ = y;
+        // Calculate LED index
+        int i = (x_ * 8) - 7 + (y_ - 1);
+        int i_ = i - 1;
 
-      // Ajuste da posição para seções específicas da matriz
-      if (y_ > 24) {
-          x_ = (96 - 3) + x_;
-      } else if (y_ > 16) {
-          x_ = (64 - 2) + x_;
-      } else if (y_ > 8) {
-          x_ = (32 - 1) + x_;
-      }
+        // Reverse the pixel within its group for mirroring
+        for (int k = 1; k < 32 * 4; k++) {
+            if (i > 8 * ((k * 2) - 1) && i <= 8 * (((k * 2) - 1) + 1)) {
+                i_ = (8 * (((k * 2) - 1) + 1)) - i + (8 * (((k * 2) - 1) + 1)) - 8;
+                break;
+            }
+        }
 
-      // Calcula o índice do LED
-      int i = (x_ * 8) - 7 + (y_ - 1);
-      int i_ = i - 1;
-
-      // Inverte o pixel dentro do seu grupo para espelhamento
-      for (int k = 1; k < 32 * 4; k++) {
-          if (i > 8 * ((k * 2) - 1) && i <= 8 * (((k * 2) - 1) + 1)) {
-              i_ = (8 * (((k * 2) - 1) + 1)) - i + (8 * (((k * 2) - 1) + 1)) - 8;
-              break;
-          }
-      }
-
-      // Converte a cor hexadecimal para RGB
-      long number = strtol(&color[1], NULL, 16);
-      leds[i_].red = (number >> 8) & 0xFF;
-      leds[i_].green = number >> 16;
-      leds[i_].blue = number & 0xFF;
-  }
+        // Convert the hexadecimal color to RGB
+        long number = strtol(&color[1], NULL, 16);
+        leds[i_].red = (number >> 8) & 0xFF;
+        leds[i_].green = number >> 16;
+        leds[i_].blue = number & 0xFF;
+    }
 }
 
-// Função para definir toda a matriz com uma cor específica
+// Function to set the entire matrix to a specific color
 void all(String color) {
     for (int x = 1; x <= kMatrixWidth; x++) {
         for (int y = 1; y <= kMatrixHeight; y++) {
@@ -48,14 +47,14 @@ void all(String color) {
     }
 }
 
-// Função para desenhar pixels aleatórios com cores aleatórias
+// Function to draw random pixels with random colors
 void randPixels() {
     for (int i = 0; i < 50; i++) {
         pixel(random(1, 33), random(1, 33), randColor());
     }
 }
 
-// Gera uma cor aleatória em formato hexadecimal
+// Generate a random color in hexadecimal format
 String randColor() {
     String letters[16] = {"a", "b", "c", "d", "e", "f", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0"};
     String randString = "";
@@ -65,43 +64,43 @@ String randColor() {
     return "#" + randString;
 }
 
-// Matriz para acompanhar os pixels fixos
+// Matrix to track fixed pixels
 int falled[32][32] = {0};
 
-// Função para resetar a matriz de pixels fixos
+// Function to reset the matrix of fixed pixels
 void resetFalled() {
     memset(falled, 0, sizeof(falled));
 }
 
-// Variáveis para a animação de queda
+// Variables for the falling animation
 int fallX = 0;
 int fallY = 0;
 int points = 0;
 
-// Função para gerenciar a animação de queda e atualizações
+// Function to manage falling animation and updates
 void fall() {
-    // Gera uma nova posição de queda, se necessário
+    // Generate a new falling position if needed
     if (fallX == 0) {
         fallX = random(1, 33);
-        if (fallX == 33) fallX = 32; // Garante que esteja dentro dos limites
+        if (fallX == 33) fallX = 32; // Ensure it's within bounds
         points++;
     }
 
-    // Atualiza a posição ou finaliza a queda
+    // Update position or finalize the fall
     if (fallY == 32 || falled[fallX - 1][fallY] == 1) {
-        falled[fallX - 1][fallY - 1] = 1; // Marca a posição final
+        falled[fallX - 1][fallY - 1] = 1; // Mark the final position
         fallX = random(1, 33);
-        if (fallX == 33) fallX = 32; // Garante que esteja dentro dos limites
-        fallY = 0; // Reseta a posição da queda
+        if (fallX == 33) fallX = 32; // Ensure it's within bounds
+        fallY = 0; // Reset falling position
         points++;
     } else {
-        fallY++; // Move para a próxima posição
+        fallY++; // Move to the next position
     }
 
-    // Desenha o pixel em queda
+    // Draw the falling pixel
     pixel(fallX, 33 - fallY, randColor());
 
-    // Desenha os pixels fixos
+    // Draw the fixed pixels
     for (int x = 0; x < 32; x++) {
         for (int y = 0; y < 32; y++) {
             if (falled[x][31 - y]) {
@@ -110,7 +109,7 @@ void fall() {
         }
     }
 
-    // Verifica e remove linhas completas
+    // Check and remove complete rows
     for (int y = 0; y < 32; y++) {
         bool complete = true;
         for (int x = 0; x < 32; x++) {
@@ -121,26 +120,26 @@ void fall() {
         }
 
         if (complete) {
-            // Limpa a linha completa
+            // Clear the complete row
             for (int x = 0; x < 32; x++) {
                 falled[x][y] = 0;
             }
 
-            // Desloca as linhas para baixo
+            // Shift rows down
             for (int py = y; py > 0; py--) {
                 for (int px = 0; px < 32; px++) {
                     falled[px][py] = falled[px][py - 1];
                 }
             }
 
-            // Limpa a linha superior
+            // Clear the top row
             for (int x = 0; x < 32; x++) {
                 falled[x][0] = 0;
             }
         }
     }
 
-    // Reseta o jogo se o limite de pontos for excedido
+    // Reset the game if the point limit is exceeded
     if (points > 896) { // 512 + 256 + 128
         resetFalled();
         points = 0;
