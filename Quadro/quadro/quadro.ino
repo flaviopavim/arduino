@@ -21,9 +21,6 @@ void setup() {
     setTime();
 }
 
-
-
-
 int x = 6;
 int y = 2;
 
