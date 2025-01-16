@@ -94,7 +94,7 @@ int obj_nine[5][3] = {
   {0, 0, 1},
 };
 
-// Função para rotacionar a matriz de números 90 graus no sentido horário
+// Function to rotate a number matrix 90 degrees clockwise.
 void rotateMatrixClockwise(int number[5][3], int rows, int cols, int result[3][5]) {
   for (int i = 0; i < rows; i++) {
     for (int j = 0; j < cols; j++) {
@@ -103,39 +103,37 @@ void rotateMatrixClockwise(int number[5][3], int rows, int cols, int result[3][5
   }
 }
 
-// Função para adicionar um número na matriz principal
+// Function to add a number to the main matrix at a specified position.
 void addNumberToMatrix(int number[5][3], int startX, int startY) {
   int rotated[3][5];
-  rotateMatrixClockwise(number, 5, 3, rotated);
+  rotateMatrixClockwise(number, 5, 3, rotated);  // Rotate the number matrix.
   
-  for (int x = 0; x < 3; x++) {  // Mudança de índices devido à rotação
+  for (int x = 0; x < 3; x++) {
     for (int y = 0; y < 5; y++) {
       matrix[startX + x][startY + y] = rotated[x][y];
     }
   }
 }
 
-// Preenche a matriz principal com os números, espaçando-os
+// Fill the main matrix with numbers, spacing them appropriately.
 void setupMatrix() {
-  addNumberToMatrix(obj_one, 0+1, 0+1);  // Adiciona o número 1
-  addNumberToMatrix(obj_two, 4+1, 0+1);  // Adiciona o número 2
-  addNumberToMatrix(obj_three, 8+1, 0+1); // Adiciona o número 3
-  addNumberToMatrix(obj_four, 12+1, 0+1); // Adiciona o número 4
+  addNumberToMatrix(obj_one, 1, 1);    // Add number 1.
+  addNumberToMatrix(obj_two, 5, 1);    // Add number 2.
+  addNumberToMatrix(obj_three, 9, 1);  // Add number 3.
+  addNumberToMatrix(obj_four, 13, 1);  // Add number 4.
 }
 
-
-
-// Função para desenhar a matriz
+// Function to render the matrix by drawing pixels.
 void draw() {
-  // Desenha os pixels
   for (int y = 0; y < 8; y++) {
     for (int x = 0; x < 32; x++) {
       if (matrix[x][y] > 0) {
-        pixel(x + 1, y + 1, actualColor);  // Desenha o pixel (ajuste de índice para 1-based)
+        pixel(x + 1, y + 1, actualColor);  // Draw pixel at (x, y).
       }
     }
   }
 }
+
 
 // Função para retornar o objeto correto baseado no dígito e desenhá-lo
 void drawNumber(int digit, int x, int y) {
