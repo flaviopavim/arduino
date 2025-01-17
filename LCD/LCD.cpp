@@ -21,7 +21,7 @@ void loop() {
   lcd.print("MakerHero");
   // Set the cursor to column 3, row 1 (bottom row)
   lcd.setCursor(3, 1);
-  // Print the text "LCD 16x2" on the LCD
+  // Print the text " LCD 16x2" on the LCD
   lcd.print(" LCD 16x2");
   // Wait for 5 seconds before performing the next action
   delay(5000);
