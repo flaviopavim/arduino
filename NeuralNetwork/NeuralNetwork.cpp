@@ -1,84 +1,85 @@
 #include <math.h>
 
-// Função de ativação sigmoide
+// Sigmoid activation function
+// This function is used to squash the input into a range between 0 and 1.
 double sigmoid(double x) {
     return 1.0 / (1.0 + exp(-x));
 }
 
-// Classe para a camada de neurônios
+// Class representing a neural network layer
 class Layer {
 public:
-    int input_size; // Tamanho da entrada
-    int output_size; // Tamanho da saída
-    double** weights; // Pesos
-    double* biases; // Viéses
-    double* activations; // Ativações
+    int input_size;      // Number of inputs to the layer
+    int output_size;     // Number of outputs from the layer
+    double** weights;    // Weights connecting inputs to outputs
+    double* biases;      // Bias values for each neuron
+    double* activations; // Activated outputs from the layer
 
-    // Construtor
+    // Constructor for initializing the layer
     Layer(int input_size, int output_size) {
-        this->input_size = input_size;
-        this->output_size = output_size;
+        this->input_size = input_size;   // Set the number of inputs
+        this->output_size = output_size; // Set the number of outputs
 
-        // Inicialização aleatória dos pesos
+        // Initialize weights with random values between -1 and 1
         weights = new double*[input_size];
         for (int i = 0; i < input_size; ++i) {
             weights[i] = new double[output_size];
             for (int j = 0; j < output_size; ++j) {
-                weights[i][j] = random(-1000, 1000) / 1000.0; // Inicialização aleatória entre -1 e 1
+                weights[i][j] = random(-1000, 1000) / 1000.0; // Random initialization
             }
         }
 
-        // Inicialização dos viéses como zero
+        // Initialize biases to zero
         biases = new double[output_size];
         for (int i = 0; i < output_size; ++i) {
             biases[i] = 0.0;
         }
 
-        // Inicialização das ativações como zero
+        // Initialize activations to zero
         activations = new double[output_size];
         for (int i = 0; i < output_size; ++i) {
             activations[i] = 0.0;
         }
     }
 
-    // Cálculo das ativações
+    // Forward pass to calculate activations
     void forward(double* input) {
         for (int i = 0; i < output_size; ++i) {
-            activations[i] = 0.0;
+            activations[i] = 0.0; // Reset the activation for this neuron
             for (int j = 0; j < input_size; ++j) {
-                activations[i] += input[j] * weights[j][i];
+                activations[i] += input[j] * weights[j][i]; // Weighted sum of inputs
             }
-            activations[i] += biases[i];
-            activations[i] = sigmoid(activations[i]);
+            activations[i] += biases[i]; // Add the bias
+            activations[i] = sigmoid(activations[i]); // Apply sigmoid activation
         }
     }
 };
 
-// Função principal
+// Main function
 void setup() {
-    Serial.begin(9600); // Inicializa a comunicação serial
+    Serial.begin(9600); // Initialize serial communication for debugging
 
-    // Parâmetros da rede neural
-    int input_size = 2;
-    int hidden_size = 3;
-    int output_size = 1;
+    // Neural network parameters
+    int input_size = 2;   // Number of input features
+    int hidden_size = 3;  // Number of neurons in the hidden layer
+    int output_size = 1;  // Number of neurons in the output layer
 
-    // Dados de entrada
-    double input[2] = {0.5, 0.7};
+    // Input data
+    double input[2] = {0.5, 0.7}; // Example input vector
 
-    // Camada oculta
+    // Create and process the hidden layer
     Layer hidden_layer(input_size, hidden_size);
-    hidden_layer.forward(input);
+    hidden_layer.forward(input); // Perform forward pass with input data
 
-    // Camada de saída
+    // Create and process the output layer
     Layer output_layer(hidden_size, output_size);
-    output_layer.forward(hidden_layer.activations);
+    output_layer.forward(hidden_layer.activations); // Forward pass with hidden layer output
 
-    // Saída da rede neural
-    Serial.print("Saída da rede neural: ");
-    Serial.println(output_layer.activations[0]);
+    // Output the neural network's result
+    Serial.print("Neural network output: ");
+    Serial.println(output_layer.activations[0]); // Display the output activation
 }
 
 void loop() {
-    // Seu código para o loop principal do Arduino, se necessário
+    // Code for the main Arduino loop, if needed
 }
