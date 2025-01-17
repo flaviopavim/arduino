@@ -23,11 +23,6 @@ void pixel(int x, int y) {
 }
 
 void loop() {
-
-  
-  
-  
-
   FastLED.show();
   delay(10);
 }
