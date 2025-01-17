@@ -1,6 +1,10 @@
 /*
 
-    Blink with no delay
+    Delay stops an execution,
+    a lot softwares can't use delay
+    so, I use a timer to compare and execute functions
+
+    Blink with no delay funcion
 
 */
 
