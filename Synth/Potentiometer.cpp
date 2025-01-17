@@ -1,55 +1,56 @@
-// Portas e ligações
-const int buzzer = 2;
+// Ports and connections
+const int buzzer = 2; // Pin connected to the buzzer
 
-// Inicialização do Arduino
+// Arduino initialization
 void setup() {
-  pinMode(buzzer, OUTPUT); // Inicializar o buzzer
+  pinMode(buzzer, OUTPUT); // Configure the buzzer pin as an output
 }
 
-// Variáveis do loop
-unsigned long previousMillis = 0;
-const long interval = 1;
-int countInterval = 0;
-const long intervalBuzzer = 10;
+// Variables for the main loop
+unsigned long previousMillis = 0; // Stores the last time the buzzer was updated
+const long interval = 1;          // Time interval (in milliseconds) for updating logic
+int countInterval = 0;            // Counter to track buzzer updates
+const long intervalBuzzer = 10;   // Number of intervals before the buzzer state is updated
 
-// Variáveis do filtro de média móvel
-const int numReadings = 10; // Número de leituras a serem usadas na média móvel
-int readings[numReadings];  // Array para armazenar as leituras
-int readIndex = 0;          // Índice da próxima leitura
-int total = 0;              // Total das leituras
+// Variables for the moving average filter
+const int numReadings = 10;       // Number of readings used in the moving average
+int readings[numReadings];        // Array to store sensor readings
+int readIndex = 0;                // Index for the next reading in the array
+int total = 0;                    // Sum of the readings in the array
 
-// Função para calcular a média móvel
+// Function to calculate the moving average of the sensor readings
 int getAverage() {
-  total = total - readings[readIndex];
-  readings[readIndex] = analogRead(A1);
-  total = total + readings[readIndex];
-  readIndex = (readIndex + 1) % numReadings;
-  return total / numReadings;
+  total = total - readings[readIndex];           // Subtract the oldest reading from the total
+  readings[readIndex] = analogRead(A1);          // Read the current sensor value
+  total = total + readings[readIndex];           // Add the new reading to the total
+  readIndex = (readIndex + 1) % numReadings;     // Move to the next reading index (circular buffer)
+  return total / numReadings;                    // Calculate and return the average
 }
 
-// Magic ;)
+// Main loop
 void loop() {
-  // Busca em qual milissegundo está
+  // Get the current time in milliseconds
   unsigned long currentMillis = millis();
 
-  // Filtrar o ruído do sensor com média móvel
-  int filteredVoltage = getAverage() * (5.0 / 1023.0) * 100;
+  // Filter sensor noise using a moving average
+  int filteredVoltage = getAverage() * (5.0 / 1023.0) * 100; // Convert to a percentage-like scale
 
-  // Mapear a leitura filtrada para a nota do buzzer
+  // Map the filtered sensor value to a note frequency for the buzzer
   int note = map(filteredVoltage, 0, 3300, 100, 10000);
 
-  // Se a contagem de milissegundos for igual ao intervalo
+  // Check if the time interval has passed
   if (currentMillis - previousMillis >= interval) {
-    // Seta o tempo atual na variável
+    // Update the previous time
     previousMillis = currentMillis;
 
+    // Increment the interval counter
     countInterval++;
 
+    // If the interval counter reaches the buzzer update threshold
     if (countInterval >= intervalBuzzer) {
-      countInterval = 0;
-      // Liga ou desliga o buzzer com base na nota
+      countInterval = 0; // Reset the interval counter
+      // Play a tone on the buzzer with the mapped frequency
       tone(buzzer, note);
     }
   }
 }
-
