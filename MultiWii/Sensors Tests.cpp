@@ -68,4 +68,3 @@ void loop() {
   Serial.println("------------------------------------");
   delay(500); // Delay for readability
 }
-

@@ -125,4 +125,3 @@ void error(const char* sensor) {
   Serial.println("! Check connections.");
   while (1);
 }
-
