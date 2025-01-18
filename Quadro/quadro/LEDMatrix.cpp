@@ -5,9 +5,24 @@ CRGB leds[NUM_LEDS];
 
 // Function to draw a pixel on the matrix with a specific color
 void pixel(int x, int y, String color) {
+
     if (x >= 1 && x <= 32 && y >= 1 && y <= 32) {
-        int x_ = 33 - x; // Adjust X for matrix orientation
-        int y_ = y;      // Y remains the same
+
+        //normal
+        //int x_ = 33 - x; // Adjust X for matrix orientation
+        //int y_ = y;      // Y remains the same
+
+        //upside down
+        int x_ = x;
+        int y_ = 33-y;
+
+        //TEST: left
+        //int x_ = y;
+        //int y_ = 33-x;
+
+        //TEST: right
+        //int x_ = 33-y;
+        //int y_ = x;
 
         // Adjust position for specific matrix sections
         if (y_ > 24) {
