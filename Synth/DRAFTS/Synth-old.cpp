@@ -125,18 +125,12 @@ void setup(){
   delay(1000);
 }
 
-
-
 void loop() {
-
   int sA0 = analogRead(A0);
-
   Serial.println("sA0 "+String(sA0));
-
   if (sA0>20) {
     bip(map(sA0,20,1024,31,4978),100);
   }
-   
 }
 */
 
