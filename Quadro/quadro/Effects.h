@@ -5,6 +5,6 @@
 #include <String.h>
 
 void pingPong();
-void explode(int index);
+void fireworks();
 
 #endif

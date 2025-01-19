@@ -49,3 +49,49 @@ void loopClock() {
         }
     }
 }
+
+
+
+int x = 6;
+int y = 2;
+
+void drawClock() {
+
+    if (bool_get_hour) {
+      int hour1 = hours / 10;      // Primeiro dígito da hora
+      int hour2 = hours % 10;      // Segundo dígito da hora
+
+      int minute1 = minutes / 10;  // Primeiro dígito dos minutos
+      int minute2 = minutes % 10;  // Segundo dígito dos minutos
+
+      int second1 = seconds / 10;  // Primeiro dígito dos segundos
+      int second2 = seconds % 10;  // Segundo dígito dos segundos
+
+      // Exibindo os valores
+      Serial.println("");
+      Serial.print(hour1);
+      Serial.print(hour2);
+      Serial.print(":");
+      Serial.print(minute1);
+      Serial.print(minute2);
+      Serial.print(":");
+      Serial.print(second1);
+      Serial.print(second2);
+
+      drawNumber(hour1,0+x,y);
+      drawNumber(hour2,4+x,y);
+      drawNumber(10,8+x,y);
+      drawNumber(minute1,12+x,y);
+      drawNumber(minute2,16+x,y);
+      //drawNumber(10,20+x,y);
+      //drawNumber(second1,24+x,y);
+      //drawNumber(second2,28+x,y);
+
+    }
+
+    if (minutes % 5==0) {
+      resetFalled();
+    }
+
+    actualColor=randColor(); //muda a cor a cada 1 segundo
+}

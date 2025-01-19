@@ -12,6 +12,8 @@ void draw();         // Função para desenhar a matriz na tela
 // Função para desenhar os números
 void drawNumber(int digit, int x, int y);
 
+void drawJson(String json);
+
 extern String actualColor;  // Cor atual
 
 #endif

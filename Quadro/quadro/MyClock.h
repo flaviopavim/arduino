@@ -7,6 +7,7 @@
 // Function declarations
 //void setupClock();
 void loopClock();
+void drawClock();
 
 // Variables for time management
 extern String actualColor;

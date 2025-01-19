@@ -137,3 +137,9 @@ void explode(int index) {
     }
   }
 }
+
+void fireworks() {
+  for (int i = 0; i < 8; i++) {
+    explode(i);
+  }
+}
