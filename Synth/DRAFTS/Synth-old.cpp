@@ -1,20 +1,19 @@
 /*
-
 Synthetizer Project
 
 UNDER CONSTRUCTION
 
-A0 - Potenciometer
-A1 - Potenciometer
-3  - R
-5  - G
-6  - B
-13 - Buzzer
-
+- A0: Potentiometer input
+- A1: Potentiometer input
+- 3 : Red LED
+- 5 : Green LED
+- 6 : Blue LED
+- 13: Buzzer (sound output)
 */
 
-const int buzzer = 2; //buzzer to arduino pin 2
+const int buzzer = 2; // Buzzer connected to Arduino pin 2
 
+// Musical notes and their frequencies in Hz
 #define NOTE_B0  31
 #define NOTE_C1  33
 #define NOTE_CS1 35
@@ -105,73 +104,59 @@ const int buzzer = 2; //buzzer to arduino pin 2
 #define NOTE_D8  4699
 #define NOTE_DS8 4978
 
-void bip(int frequency, int delay_){
+// Function to play a tone
+void bip(int frequency, int delay_) {
   tone(buzzer, frequency);
   delay(delay_);
   noTone(buzzer);
 }
 
+// Play startup sound sequence
 void soundSetup() {
-  bip(500,100);
-  bip(1000,100);
-  bip(1500,100);
+  bip(500, 100);
+  bip(1000, 100);
+  bip(1500, 100);
 }
 
-/*
-void setup(){
-  Serial.begin(9600);
-  pinMode(buzzer, OUTPUT); // Set buzzer - pin 4 as an output
-  soundSetup();
-  delay(1000);
-}
-
-void loop() {
-  int sA0 = analogRead(A0);
-  Serial.println("sA0 "+String(sA0));
-  if (sA0>20) {
-    bip(map(sA0,20,1024,31,4978),100);
-  }
-}
-*/
-
+// Custom implementation of the map function
 long map(long x, long in_min, long in_max, long out_min, long out_max) {
   return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
 
-
-const int numReadings = 5; // Número de leituras a serem utilizadas para a média móvel
-int readings[numReadings];   // Array para armazenar as leituras
-int index = 0;               // Índice atual no array de leituras
-int total = 0;               // Soma total das leituras
+// Moving average filter parameters
+const int numReadings = 5;
+int readings[numReadings];
+int index = 0;
+int total = 0;
 
 void setup() {
   Serial.begin(9600);
-  pinMode(buzzer, OUTPUT); // Define o buzzer - pino 4 como saída
+  pinMode(buzzer, OUTPUT); // Set buzzer pin as output
   soundSetup();
   delay(1000);
 
-  // Inicializa o array de leituras
-  for (int thisReading = 0; thisReading < numReadings; thisReading++) {
-    readings[thisReading] = 0;
+  // Initialize the readings array
+  for (int i = 0; i < numReadings; i++) {
+    readings[i] = 0;
   }
 }
 
 void loop() {
-  // Subtrai a leitura mais antiga e adiciona a mais recente à soma total
+  // Update the total by removing the oldest reading and adding the new one
   total = total - readings[index];
   readings[index] = analogRead(A0);
   total = total + readings[index];
 
-  // Avança para a próxima posição no array de leituras
+  // Move to the next position in the readings array
   index = (index + 1) % numReadings;
 
-  // Calcula a média das leituras
+  // Calculate the average
   int average = total / numReadings;
 
-  // Imprime a média
+  // Print the average value
   Serial.println("Average: " + String(average));
 
-  // Se a média for maior que um determinado limite, toca o buzzer
+  // Play a sound if the average exceeds the threshold
   if (average > 20) {
     int frequency = map(average, 20, 1014, 31, 4978);
     bip(frequency, 10);
