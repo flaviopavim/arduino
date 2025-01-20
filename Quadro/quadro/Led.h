@@ -1,5 +1,5 @@
-#ifndef LEDMATRIX_H
-#define LEDMATRIX_H
+#ifndef LED_H
+#define LED_H
 
 #include <Arduino.h>
 #include <FastLED.h>
@@ -16,9 +16,8 @@ extern CRGB leds[NUM_LEDS];
 // Funções para manipulação da matriz
 void pixel(int x, int y, String color);
 void all(String color);
-void randPixels();
-String randColor();
-void resetFalled();
-void fall();
+
+void reset();
+void show();
 
 #endif // LEDMATRIX_H

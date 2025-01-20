@@ -1,6 +1,6 @@
 #include <Arduino.h>
 
-#include "LEDMatrix.h"       // Includes the header file for controlling the LED matrix
+#include "LED.h"       // Includes the header file for controlling the LED matrix
 
 int ledMatrix[32][32] = {
   {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},

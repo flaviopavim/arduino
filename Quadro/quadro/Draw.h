@@ -9,12 +9,16 @@ void addNumberToMatrix(int number[5][3], int startX, int startY);
 void setupMatrix();  // Função para preencher a matriz com os números
 void draw();         // Função para desenhar a matriz na tela
 
+//void randPixels();
+String randColor();
+void resetFalled();
+//void fall();
+
+
 // Função para desenhar os números
 void drawNumber(int digit, int x, int y);
-
 void drawJson(String json);
 
 extern String actualColor;  // Cor atual
 
 #endif
-

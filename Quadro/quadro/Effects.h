@@ -4,7 +4,11 @@
 #include <Arduino.h>
 #include <String.h>
 
+void effects();
 void pingPong();
 void fireworks();
+void rain();
+void randPixels();
+int pickEffect();
 
 #endif

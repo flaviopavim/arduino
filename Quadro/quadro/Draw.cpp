@@ -1,6 +1,6 @@
 #include <ArduinoJson.h> // Inclua a biblioteca ArduinoJson
 
-#include "LEDMatrix.h"
+#include "LED.h"
 #include "Draw.h"
 
 String actualColor = "#ffffff";

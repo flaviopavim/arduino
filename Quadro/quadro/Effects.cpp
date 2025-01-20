@@ -1,5 +1,90 @@
-#include "LEDMatrix.h"
+#include "LED.h"
 #include "Effects.h"
+#include "Draw.h"
+
+
+// Matrix to track fixed pixels
+int falled[32][32] = {0};
+
+// Function to reset the matrix of fixed pixels
+void resetFalled() {
+    memset(falled, 0, sizeof(falled));
+}
+
+// Variables for the falling animation
+int fallX = 0;
+int fallY = 0;
+int points = 0;
+
+// Function to manage falling animation and updates
+void fall() {
+    // Generate a new falling position if needed
+    if (fallX == 0) {
+        fallX = random(1, 33);
+        if (fallX == 33) fallX = 32; // Ensure it's within bounds
+        points++;
+    }
+
+    // Update position or finalize the fall
+    if (fallY == 32 || falled[fallX - 1][fallY] == 1) {
+        falled[fallX - 1][fallY - 1] = 1; // Mark the final position
+        fallX = random(1, 33);
+        if (fallX == 33) fallX = 32; // Ensure it's within bounds
+        fallY = 0; // Reset falling position
+        points++;
+    } else {
+        fallY++; // Move to the next position
+    }
+
+    // Draw the falling pixel
+    pixel(fallX, 33 - fallY, randColor());
+
+    // Draw the fixed pixels
+    for (int x = 0; x < 32; x++) {
+        for (int y = 0; y < 32; y++) {
+            if (falled[x][31 - y]) {
+                pixel(x + 1, y + 1, "#666666");
+            }
+        }
+    }
+
+    // Check and remove complete rows
+    for (int y = 0; y < 32; y++) {
+        bool complete = true;
+        for (int x = 0; x < 32; x++) {
+            if (falled[x][y] == 0) {
+                complete = false;
+                break;
+            }
+        }
+
+        if (complete) {
+            // Clear the complete row
+            for (int x = 0; x < 32; x++) {
+                falled[x][y] = 0;
+            }
+
+            // Shift rows down
+            for (int py = y; py > 0; py--) {
+                for (int px = 0; px < 32; px++) {
+                    falled[px][py] = falled[px][py - 1];
+                }
+            }
+
+            // Clear the top row
+            for (int x = 0; x < 32; x++) {
+                falled[x][0] = 0;
+            }
+        }
+    }
+
+    // Reset the game if the point limit is exceeded
+    if (points > 896) { // 512 + 256 + 128
+        resetFalled();
+        points = 0;
+    }
+}
+
 
 // Variables for the ping-pong animation
 int posX = random(1, 32);
@@ -141,5 +226,105 @@ void explode(int index) {
 void fireworks() {
   for (int i = 0; i < 8; i++) {
     explode(i);
+  }
+}
+
+
+void randPixels() {
+  for (int i = 0; i < 50; i++) {
+    pixel(random(1, 32), random(1, 32), randColor());
+  }
+}
+
+unsigned long previousMillis = 0;
+const long interval = 1000*10; // 10 seconds
+int effect_number=0;
+
+int pickEffect() {
+  unsigned long currentMillis = millis();
+  if (previousMillis == 0 || currentMillis - previousMillis >= interval) {
+      previousMillis = currentMillis;
+      effect_number++;
+      if (effect_number>4) {
+        effect_number=1;
+      }
+  }
+  return effect_number;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Matrix to track falling raindrops
+int raindrops[32][32] = {0};
+
+// Function to reset the matrix of raindrops
+void resetRaindrops() {
+    memset(raindrops, 0, sizeof(raindrops));
+}
+
+// Variables for the rain animation
+int rainX[5] = {0}; // Array to hold X positions for raindrops
+int rainY[5] = {0}; // Array to hold Y positions for raindrops
+
+// Function to simulate the rain
+void rain() {
+    // Loop through all raindrops
+    for (int i = 0; i < 5; i++) {
+        // If a raindrop reaches the bottom or is blocked, reset it to the top
+        if (rainY[i] >= 32 || raindrops[rainX[i] - 1][rainY[i]] == 1) {
+            rainX[i] = random(1, 33);
+            if (rainX[i] == 33) rainX[i] = 32; // Ensure it's within bounds
+            rainY[i] = 0; // Reset Y position to top
+        } else {
+            rainY[i]++; // Move the raindrop down
+        }
+
+        // Draw the raindrop as a blue pixel
+        pixel(rainX[i], 33 - rainY[i], "#0000ff");
+
+        // Mark the raindrop as fixed in the matrix
+        raindrops[rainX[i] - 1][rainY[i] - 1] = 1;
+    }
+
+    // Draw the fixed raindrops
+    for (int x = 0; x < 32; x++) {
+        for (int y = 0; y < 32; y++) {
+            if (raindrops[x][31 - y]) {
+                pixel(x + 1, y + 1, "#0000ff");
+            }
+        }
+    }
+
+    // Reset the raindrop matrix if points exceed a certain threshold
+    // This ensures that the rain keeps falling without being blocked by the fixed pixels
+    if (points > 896) { // 512 + 256 + 128
+        resetRaindrops();
+        points = 0;
+    }
+}
+
+
+
+void effects() {
+  int effect_number=pickEffect();
+  if (effect_number==1) {
+    fireworks();
+    //fall();
+  } else if (effect_number==2) {
+    pingPong();
+  } else if (effect_number==3) {
+    //rain();
+  } else if (effect_number==4) {
+    randPixels();
   }
 }
