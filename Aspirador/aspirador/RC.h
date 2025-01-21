@@ -4,6 +4,6 @@
 #include <Arduino.h>
 
 void setupRC();
-void loopRC();
+bool loopRC();
 
 #endif
