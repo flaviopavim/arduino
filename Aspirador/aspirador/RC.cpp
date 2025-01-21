@@ -24,7 +24,7 @@ int readChannel(int channelInput, int minLimit, int maxLimit, int defaultValue){
   return map(ch, 1000, 2000, minLimit, maxLimit);
 }
 
-void loopRC() {
+bool loopRC() {
 
   //Lê o valor dos canais do Rádio Controle
   ch1Value = readChannel(CH1, -100, 100, 0);
@@ -41,18 +41,25 @@ void loopRC() {
   if (ch3Value>80) {
     //o carrinho vai pra esquerda
     left();
+    return true;
   } else if (ch3Value<-80) {
     //o carrinho vai pra direita
     right();
+    return true;
   } else if (ch2Value<30 && ch2Value>-30) {
     //o carrinho fica parado
     stop();
+    return true;
   } else if (ch2Value>80) {
     //vai pra frente
     front();
+    return true;
   } else if (ch2Value<-80) {
     //vai pra trás
     back();
+    return true;
   }
+
+  return false;
   
 }
