@@ -2,7 +2,10 @@
 #include <WiFiClient.h>
 #include <Espalexa.h>
 
+#include "WiFiConnection.h"
+#include "Alexa.h"
 #include "API.h"
+
 #include "LED.h"
 #include "Draw.h"
 #include "MyClock.h"
@@ -12,6 +15,13 @@
 void setup() {
     Serial.begin(115200);
     FastLED.addLeds<WS2811, 2, RGB>(leds, NUM_LEDS);
+
+    // Inicializa a conexão WiFi
+    wifiConnected = connectWifi();
+    delay(5);
+    
+    setupAlexa();
+    //getAPI();
     setTime();
 }
 
@@ -20,4 +30,5 @@ void loop() {
   effects();
   loopClock();
   show();
+  loopAlexa();
 }

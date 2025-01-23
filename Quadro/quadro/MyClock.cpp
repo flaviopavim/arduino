@@ -18,6 +18,8 @@ const long interval_ = 1000;     // Time interval in milliseconds (1 second)
 int x = 6;
 int y = 2;
 
+int lastSecond=0;
+
 void drawClock() {
 
     if (bool_get_hour) {
@@ -30,16 +32,19 @@ void drawClock() {
       int second1 = seconds / 10;  // Primeiro dígito dos segundos
       int second2 = seconds % 10;  // Segundo dígito dos segundos
 
-      // Exibindo os valores
-      Serial.println("");
-      Serial.print(hour1);
-      Serial.print(hour2);
-      Serial.print(":");
-      Serial.print(minute1);
-      Serial.print(minute2);
-      Serial.print(":");
-      Serial.print(second1);
-      Serial.print(second2);
+      if (lastSecond!=second2){
+        lastSecond=second2;
+        // Exibindo os valores
+        Serial.print(hour1);
+        Serial.print(hour2);
+        Serial.print(":");
+        Serial.print(minute1);
+        Serial.print(minute2);
+        Serial.print(":");
+        Serial.print(second1);
+        Serial.print(second2);
+        Serial.println("");
+      }
 
       drawNumber(hour1,0+x,y);
       drawNumber(hour2,4+x,y);
