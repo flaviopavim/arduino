@@ -14,6 +14,8 @@ extern bool bool_get_hour;
 extern int hours, minutes, seconds;
 extern int hour1, hour2, minute1, minute2, second1, second2;
 
+extern char* bitcoin;
+
 void setTime();
 
 #endif

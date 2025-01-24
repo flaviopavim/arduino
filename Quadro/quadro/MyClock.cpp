@@ -92,7 +92,7 @@ void loopClock() {
         // Serial.println(count);
 
         // Every 15 minutes, fetches the time again
-        if (count > 60 * 15) { 
+        if (count > 60 * 5) { 
             count = 0;       // Resets the counter
             // resetFalled();  // Resets additional states (uncomment if needed)
 

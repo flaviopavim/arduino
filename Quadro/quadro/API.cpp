@@ -17,6 +17,8 @@ int minute2 = 0;
 int second1 = 0;
 int second2 = 0;
 
+char* bitcoin="000000";
+
 void setTime() {
   WiFiMulti.addAP(ssid, pass);  // Add WiFi access point
   delay(2);                     // Small delay for stability
@@ -45,6 +47,11 @@ void setTime() {
             DeserializationError error = deserializeJson(doc, payload);  // Parse JSON response
 
             if (!error) {  // Check if JSON parsing was successful
+
+
+              String bitcoinString = doc["bitcoin"];  // Extrai o valor de "bitcoin" da resposta JSON
+              bitcoin = strdup(bitcoinString.c_str());  // Converte a String para char* e aloca memória dinamicamente
+
               String datetime = doc["datetime"]; // Extract datetime string (e.g., "2025-01-12 14:02:39")
               int spacePos = datetime.indexOf(' ');  // Find space separating date and time
               

@@ -42,6 +42,6 @@ void setupAlexa() {
 void loopAlexa() {
   Serial.println("Escutando comandos Alexa");
   espalexa.loop();
-  //delay(1);
+  delay(1);
 }
 
