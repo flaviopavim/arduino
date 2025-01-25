@@ -34,10 +34,10 @@ void loop() {
   write("btc",0);
 
   String bitcoinString = String(bitcoin);
-  char temp[4];  // Array para armazenar 3 caracteres + '\0'
+  char temp[7];  // Array para armazenar 3 caracteres + '\0'
 
-  String firstThree = bitcoinString.substring(0, 3);
-  firstThree.toCharArray(temp, 4);  // Converte a String para char*
+  String firstThree = bitcoinString.substring(0, 6);
+  firstThree.toCharArray(temp, 7);  // Converte a String para char*
   write(temp, 6);  // Escreve os primeiros 3 caracteres
 
   //String secondThree = bitcoinString.substring(3, 6);
