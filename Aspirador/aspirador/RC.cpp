@@ -2,23 +2,23 @@
 #include "RC.h"
 #include "Motors.h"
 
-//Portas utilizadas
+// Pins used
 #define CH1 3
 #define CH2 5
 #define CH3 6
 
-//Variáveis pra receber dados do controle
+// Variables to receive data from the remote control
 int ch1Value, ch2Value, ch3Value;
 
+// Initialize the control pins
 void setupRC() {
-//Inicia os pinos do controle
   pinMode(CH1, INPUT);
   pinMode(CH2, INPUT);
   pinMode(CH3, INPUT);
 }
 
-//Lê os canais
-int readChannel(int channelInput, int minLimit, int maxLimit, int defaultValue){
+// Reads the channels
+int readChannel(int channelInput, int minLimit, int maxLimit, int defaultValue) {
   int ch = pulseIn(channelInput, HIGH, 30000);
   if (ch < 100) return defaultValue;
   return map(ch, 1000, 2000, minLimit, maxLimit);
@@ -26,40 +26,39 @@ int readChannel(int channelInput, int minLimit, int maxLimit, int defaultValue){
 
 bool loopRC() {
 
-  //Lê o valor dos canais do Rádio Controle
+  // Reads the values from the remote control channels
   ch1Value = readChannel(CH1, -100, 100, 0);
   ch2Value = readChannel(CH2, -100, 100, 0);
   ch3Value = readChannel(CH3, -100, 100, 0);
   
-  //Printa no monitor serial pra ver os valores
+  // Prints the values to the Serial Monitor for debugging
   Serial.print(" Ch2: ");
   Serial.print(ch2Value);
   Serial.print(" Ch3: ");
   Serial.println(ch3Value);
 
-  //abaixo foi usado o canal 3 e 2 do rádio controle
-  if (ch3Value>80) {
-    //o carrinho vai pra esquerda
+  // Below, channel 3 and 2 of the remote control were used
+  if (ch3Value > 80) {
+    // The car turns left
     left();
     return true;
-  } else if (ch3Value<-80) {
-    //o carrinho vai pra direita
+  } else if (ch3Value < -80) {
+    // The car turns right
     right();
     return true;
-  } else if (ch2Value<30 && ch2Value>-30) {
-    //o carrinho fica parado
+  } else if (ch2Value < 30 && ch2Value > -30) {
+    // The car stops
     stop();
     return true;
-  } else if (ch2Value>80) {
-    //vai pra frente
+  } else if (ch2Value > 80) {
+    // The car moves forward
     front();
     return true;
-  } else if (ch2Value<-80) {
-    //vai pra trás
+  } else if (ch2Value < -80) {
+    // The car moves backward
     back();
     return true;
   }
 
   return false;
-  
 }
