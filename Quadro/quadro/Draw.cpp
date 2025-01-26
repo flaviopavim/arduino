@@ -248,3 +248,90 @@ void drawJson(String json) {
 //    FastLED.setBrightness(20);
 //    FastLED.show();
 //}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// JSON representado como uma matriz 3D
+int frames[8][8][8] = {0};
+
+// Função para converter a string JSON em um array 3D
+void jsonTo3DArray(const char* json, int output[8][8][8]) {
+    // Cria um buffer para o JSON
+    StaticJsonDocument<2048> doc;
+
+    // Deserializa o JSON
+    DeserializationError error = deserializeJson(doc, json);
+
+    if (error) {
+        Serial.print(F("Erro ao processar JSON: "));
+        Serial.println(error.c_str());
+        return;
+    }
+
+    // Preenche o array 3D
+    for (int frame = 0; frame < 8; frame++) {
+        for (int x = 0; x < 8; x++) {
+            for (int y = 0; y < 8; y++) {
+                output[frame][x][y] = doc[frame][x][y];
+            }
+        }
+    }
+    
+}
+
+int actual_frame = 0; // Frame atual
+
+void drawJSON() {
+
+    //transforma o json em frames
+    jsonTo3DArray(json, frames);
+
+    // Percorre cada posição do frame atual
+    for (int x = 0; x < 32; x++) {
+        for (int y = 0; y < 32; y++) {
+            int color = frames[actual_frame][x][y]; // Cor do pixel
+            pixel(x+1, y+1, color); // Função para desenhar o pixel
+        }
+    }
+
+    // Avança para o próximo frame
+    actual_frame++;
+    if (actual_frame == 8) { // Retorna ao primeiro frame se ultrapassar o último
+        actual_frame = 0;
+    }
+
+    
+}
+
+
+
+
+
+
+
+
+
