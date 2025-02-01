@@ -14,16 +14,16 @@ void pixel(int x, int y, String color) {
         //int y_ = y;      // Y remains the same
 
         //upside down
-        //int x_ = x;
-        //int y_ = 33-y;
+        int x_ = x;
+        int y_ = 33-y;
 
         //horario
         //int x_ = y;
         //int y_ = x;
 
         //antihorario
-        int x_ = 33-y;
-        int y_ = 33-x;
+        //int x_ = 33-y;
+        //int y_ = 33-x;
 
         // Adjust position for specific matrix sections
         if (y_ > 24) {
@@ -79,8 +79,6 @@ String randColor() {
     }
     return "#" + randString;
 }
-
-
 
 void reset() {
   all("#000000");

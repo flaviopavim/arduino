@@ -1,3 +1,4 @@
+#include <ArduinoJson.h>
 #include "WiFiConnection.h"  // Include WiFi connection utilities
 #include "API.h"             // Include API utilities
 
@@ -17,7 +18,9 @@ int minute2 = 0;
 int second1 = 0;
 int second2 = 0;
 
-char* bitcoin="000000";
+//char* bitcoin="000000";
+String bitcoin = "000000";
+String usd = "";
 
 void setTime() {
   WiFiMulti.addAP(ssid, pass);  // Add WiFi access point
@@ -51,6 +54,9 @@ void setTime() {
 
               String bitcoinString = doc["bitcoin"];  // Extrai o valor de "bitcoin" da resposta JSON
               bitcoin = strdup(bitcoinString.c_str());  // Converte a String para char* e aloca memória dinamicamente
+
+              String usdString = doc["usd"];  // Extrai o valor de "bitcoin" da resposta JSON
+              usd = strdup(usdString.c_str());  // Converte a String para char* e aloca memória dinamicamente
 
               String datetime = doc["datetime"]; // Extract datetime string (e.g., "2025-01-12 14:02:39")
               int spacePos = datetime.indexOf(' ');  // Find space separating date and time

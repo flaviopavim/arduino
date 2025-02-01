@@ -1,3 +1,4 @@
+#include <ArduinoJson.h>
 #include "WiFiConnection.h"  // Includes the custom header for WiFi connection logic
 #include <ESP8266WiFi.h>     // Core library for WiFi functionality on ESP8266
 #include <ESP8266WiFiMulti.h> // Enables management of multiple WiFi connections
