@@ -10,12 +10,12 @@ void pixel(int x, int y, String color) {
     if (x >= 1 && x <= 32 && y >= 1 && y <= 32) {
 
         //normal
-        //int x_ = 33 - x; // Adjust X for matrix orientation
-        //int y_ = y;      // Y remains the same
+        int x_ = 33 - x; // Adjust X for matrix orientation
+        int y_ = y;      // Y remains the same
 
         //upside down
-        int x_ = x;
-        int y_ = 33-y;
+        //int x_ = x;
+        //int y_ = 33-y;
 
         //horario
         //int x_ = y;
