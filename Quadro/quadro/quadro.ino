@@ -22,7 +22,7 @@ void setup() {
     wifiConnected = connectWifi();
     delay(8);
     
-    //setupAlexa();
+    setupAlexa();
     //getAPI();
     setTime();
 }
