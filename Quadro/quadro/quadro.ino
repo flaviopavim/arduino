@@ -49,6 +49,5 @@ void loop() {
   secondThree.toCharArray(tempUSD, 5);  // Converte a String para char*
   write(tempUSD, 18);  // Escreve os primeiros 3 caracteres
 
-
   show();
 }

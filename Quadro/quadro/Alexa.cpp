@@ -1,21 +1,12 @@
 #include "Alexa.h"
 
 Espalexa espalexa;
-String deviceNames[] = {"Computador", "Quadro"}; // Array com os nomes dos dispositivos
-
-// Funções de callback para os dispositivos
-void computerChanged(uint8_t brightness) {
-    Serial.print(deviceNames[0] + " changed to ");
-    if (brightness) {
-        Serial.print("ON, brightness ");
-        Serial.println(brightness);
-    } else {
-        Serial.println("OFF");
-    }
-}
+String deviceNames[] = {
+  "Quadro"
+}; // Array com os nomes dos dispositivos
 
 void quadroChanged(uint8_t brightness) {
-    Serial.print(deviceNames[1] + " changed to ");
+    Serial.print(deviceNames[0] + " changed to ");
     if (brightness) {
         Serial.print("ON, brightness ");
         Serial.println(brightness);
