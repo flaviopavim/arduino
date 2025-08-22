@@ -61,7 +61,8 @@ void drawClock() {
       resetFalled();
     }
 
-    actualColor=randColor(); //muda a cor a cada 1 segundo
+    //actualColor=randColor(); //muda a cor a cada 1 segundo
+    actualColor="#FFFFFF"; //muda a cor a cada 1 segundo
 }
 
 

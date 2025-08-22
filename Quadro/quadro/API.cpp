@@ -20,6 +20,8 @@ int second2 = 0;
 
 //char* bitcoin="000000";
 String bitcoin = "000000";
+String wallet = "000000";
+String phrase = "";
 String usd = "";
 
 void setTime() {
@@ -51,9 +53,14 @@ void setTime() {
 
             if (!error) {  // Check if JSON parsing was successful
 
+              String phraseString = doc["phrase"];  // Extrai o valor de "bitcoin" da resposta JSON
+              phrase = strdup(phraseString.c_str());  // Converte a String para char* e aloca memória dinamicamente
 
               String bitcoinString = doc["bitcoin"];  // Extrai o valor de "bitcoin" da resposta JSON
               bitcoin = strdup(bitcoinString.c_str());  // Converte a String para char* e aloca memória dinamicamente
+
+              String walletString = doc["wallet"];  // Extrai o valor de "bitcoin" da resposta JSON
+              wallet = strdup(walletString.c_str());  // Converte a String para char* e aloca memória dinamicamente
 
               String usdString = doc["usd"];  // Extrai o valor de "bitcoin" da resposta JSON
               usd = strdup(usdString.c_str());  // Converte a String para char* e aloca memória dinamicamente

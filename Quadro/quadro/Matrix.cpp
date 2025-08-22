@@ -151,7 +151,8 @@ void drawPoint(char char_, int startX, int startY, String color) {
 void write(const char* word, int y) {
   int x = 0; // Initial position on the X axis
 
-  String color = pickColor();
+  //String color = pickColor();
+  String color = "#FFFFFF";
 
   // Iterate through each character of the word
   for (int i = 0; word[i] != '\0'; i++) {
@@ -162,6 +163,8 @@ void write(const char* word, int y) {
       drawNumbers(c - '0', x, y, color); // Convert the numeric character to an integer
     } else if (c == '.') { // If it's a number
       drawPoint(c, x, y, color);
+    } else if (c == ' ') { // If it's a number
+      x -= 2; // Define the space for unknown characters
     } else {
       x += 4; // Define the space for unknown characters
     }
