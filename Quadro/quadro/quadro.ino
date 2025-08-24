@@ -18,6 +18,9 @@ unsigned long lastSwitch = 0;   // guarda o último tempo da troca
 int screenState = 0;            // 0=bitcoin, 1=wallet, 2=hora
 const unsigned long interval = 5000; // tempo entre trocas (5s)
 
+unsigned long lastSwitchMinute = 0;   // guarda o último tempo da troca
+const unsigned long intervalMinute = 60000; // tempo entre trocas (5s)
+
 void setup() {
     Serial.begin(115200);
     FastLED.addLeds<WS2811, 2, RGB>(leds, NUM_LEDS);
@@ -36,6 +39,13 @@ void loop() {
   reset();
   //effects();
   loopClock();
+  if (millis() - lastSwitchMinute > intervalMinute) {
+    lastSwitchMinute = millis();
+    wifiConnected = connectWifi();
+    delay(2);
+    setupAlexa();
+    setTime();
+  }
 
   // --- alternador de telas ---
   if (millis() - lastSwitch > interval) {
@@ -55,12 +65,13 @@ void loop() {
       firstSix.toCharArray(tempBitcoin, 7);
 
       String text = "  " + String(tempBitcoin);
-      write(text.c_str(), 14);
+      String textColor = "#" + String(color);
+      writeColor(text.c_str(), 14, textColor.c_str());
       break;
     }
 
     case 1: { // WALLET
-      write("  wallet", 8);
+      write("carteira", 8);
 
       String walletString = wallet;
       char tempWallet[10];

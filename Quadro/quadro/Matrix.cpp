@@ -148,6 +148,31 @@ void drawPoint(char char_, int startX, int startY, String color) {
   }
 }
 
+void writeColor(const char* word, int y, const char* color) {
+  int x = 0; // Initial position on the X axis
+
+  //String color = pickColor();
+  //String color = "#FFFFFF";
+
+  // Iterate through each character of the word
+  for (int i = 0; word[i] != '\0'; i++) {
+    char c = word[i];
+    if (c >= 'a' && c <= 'z') { // If it's a lowercase letter
+      drawLetter(c, x, y, color);
+    } else if (c >= '0' && c <= '9') { // If it's a number //TODO: isso ta errado kkkk (mas porque ta desenhando? kkkkk), tinha que converter pra int
+      drawNumbers(c - '0', x, y, color); // Convert the numeric character to an integer
+    } else if (c == '.') { // If it's a number
+      drawPoint(c, x, y, color);
+    } else if (c == ' ') { // If it's a number
+      x -= 2; // Define the space for unknown characters
+    } else {
+      x += 4; // Define the space for unknown characters
+    }
+    x += 4; // Increment the X position for the next character
+  }
+}
+
+
 void write(const char* word, int y) {
   int x = 0; // Initial position on the X axis
 

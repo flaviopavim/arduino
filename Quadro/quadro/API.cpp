@@ -19,6 +19,7 @@ int second1 = 0;
 int second2 = 0;
 
 //char* bitcoin="000000";
+String color = "FFFFFF";
 String bitcoin = "000000";
 String wallet = "000000";
 String phrase = "";
@@ -52,6 +53,9 @@ void setTime() {
             DeserializationError error = deserializeJson(doc, payload);  // Parse JSON response
 
             if (!error) {  // Check if JSON parsing was successful
+
+              String colorString = doc["color"];
+              color = strdup(colorString.c_str());
 
               String phraseString = doc["phrase"];  // Extrai o valor de "bitcoin" da resposta JSON
               phrase = strdup(phraseString.c_str());  // Converte a String para char* e aloca memória dinamicamente
