@@ -46,20 +46,22 @@ void drawClock() {
         Serial.println("");
       }
 
-      drawNumber(hour1,0+x,y);
-      drawNumber(hour2,4+x,y);
-      drawNumber(10,8+x,y);
-      drawNumber(minute1,12+x,y);
-      drawNumber(minute2,16+x,y);
-      //drawNumber(10,20+x,y);
-      //drawNumber(second1,24+x,y);
-      //drawNumber(second2,28+x,y);
+      int xx=0;
+
+      drawNumber(hour1,0+x-xx,y);
+      drawNumber(hour2,4+x-xx,y);
+      drawNumber(10,8+x-xx,y);
+      drawNumber(minute1,12+x-xx,y);
+      drawNumber(minute2,16+x-xx,y);
+      //drawNumber(10,20+x-xx,y);
+      //drawNumber(second1,24+x-xx,y);
+      //drawNumber(second2,28+x-xx,y);
 
     }
 
-    if (minutes % 5==0) {
-      resetFalled();
-    }
+    //if (minutes % 5==0) {
+    //  resetFalled();
+    //}
 
     //actualColor=randColor(); //muda a cor a cada 1 segundo
     actualColor="#FFFFFF"; //muda a cor a cada 1 segundo

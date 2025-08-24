@@ -39,11 +39,12 @@ void loop() {
   reset();
   //effects();
   loopClock();
+  
   if (millis() - lastSwitchMinute > intervalMinute) {
     lastSwitchMinute = millis();
     wifiConnected = connectWifi();
     delay(2);
-    setupAlexa();
+    //setupAlexa();
     setTime();
   }
 
@@ -51,7 +52,7 @@ void loop() {
   if (millis() - lastSwitch > interval) {
     lastSwitch = millis();
     screenState++;
-    if (screenState > 1) screenState = 0;
+    if (screenState > 2) screenState = 0;
   }
 
   // --- exibição ---
@@ -70,7 +71,21 @@ void loop() {
       break;
     }
 
-    case 1: { // WALLET
+    case 1: { // ETHEREUM
+      write("ethereum",8);
+
+      String ethereumString = ethereum;
+      char tempEthereum[6];
+      String firstSix = ethereumString.substring(0, 5);
+      firstSix.toCharArray(tempEthereum, 6);
+
+      String text = "   " + String(tempEthereum);
+      //String textColor = "#" + String(color);
+      write(text.c_str(), 14);
+      break;
+    }
+
+    case 2: { // WALLET
       write("carteira", 8);
 
       String walletString = wallet;
@@ -83,7 +98,7 @@ void loop() {
       break;
     }
 
-    case 2: {
+    case 3: {
       write("poha de", 1);
       write("api da", 7);
       write("pagar.me", 13);
@@ -91,7 +106,7 @@ void loop() {
       break;
     }
 
-    case 3: {
+    case 4: {
       write("borajoga", 1);
       write("resident", 7);
       write("  evil 6", 13);
@@ -99,7 +114,7 @@ void loop() {
       break;
     }
 
-    case 4: {
+    case 5: {
       write("   ozzy", 1);
       write("e melhor", 7);
       write("que iron", 13);
@@ -107,7 +122,7 @@ void loop() {
       break;
     }
 
-    case 5: {
+    case 6: {
       write("   cuida", 1);
       write("      da", 7);
       write("     sua", 13);
@@ -115,7 +130,7 @@ void loop() {
       break;
     }
 
-    case 6: {
+    case 7: {
       String phraseString = phrase;
       char tempPhrase[7];
       String firstPhrase = phraseString.substring(0, 8);

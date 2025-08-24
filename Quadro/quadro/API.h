@@ -17,6 +17,7 @@ extern int hour1, hour2, minute1, minute2, second1, second2;
 extern String color;
 extern String phrase;
 extern String bitcoin;
+extern String ethereum;
 extern String wallet;
 extern String usd;
 
