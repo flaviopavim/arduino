@@ -1,3 +1,5 @@
+#include <Arduino.h>
+
 // Ports and connections
 const int buzzer = 2; // Pin connected to the buzzer
 
