@@ -113,6 +113,11 @@ void handleTcpClients() {
             // Exemplo de ação: acender LED se Y estiver pressionado
             digitalWrite(led, Y ? LOW : HIGH);
 
+            if (A) {
+              //fazer algo
+            }
+
+
             // Encaminha para Arduino remoto
             MySerial.println(buffer);
           } else {
